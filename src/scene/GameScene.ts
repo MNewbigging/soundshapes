@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { eventManager, EventParams, EventType } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { Shape } from '../common/types/Shapes';
+import { RandomId } from '../utils/RandomId';
 import { GameUtils } from './GameUtils';
 
 export class GameScene {
@@ -40,9 +41,9 @@ export class GameScene {
     shapeMesh.position.set(0, 0, 2);
     this.scene.add(shapeMesh);
 
-    // TODO - create random unique id for the shape in the scene
-    this.mouseObjectId = 'beater';
-    this.objects.set('beater', shapeMesh);
+    const newId = RandomId.createId();
+    this.mouseObjectId = newId;
+    this.objects.set(newId, shapeMesh);
   };
 
   private setupSceneBasics() {
