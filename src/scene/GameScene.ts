@@ -80,10 +80,21 @@ export class GameScene {
     eventManager.fire(EventType.CANCEL_ADD);
   };
 
-  private readonly onClickCanvas = () => {
+  private readonly onClickCanvas = (e: MouseEvent) => {
     // Determine action based on current state
     switch (this.sceneState) {
       case GameSceneStates.IDLE:
+        console.log('testing for select shape');
+        // Set mouse position
+        this.onMouseMove(e);
+        // Determine if clicked on shape
+        for (const mesh of Array.from(this.objects.values())) {
+          const box = new THREE.Box3();
+          box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+          if (box.containsPoint(this.mousePos)) {
+            console.log('clicked on mesh!');
+          }
+        }
         break;
       case GameSceneStates.ADDING_SHAPE:
         this.addShape();
@@ -102,6 +113,7 @@ export class GameScene {
 
     // Place it in the scene
     shape.position.set(this.mousePos.x, this.mousePos.y, 0);
+    shape.geometry.computeBoundingBox();
 
     // No longer adding a shape
     this.mouseObjectId = '';
@@ -143,6 +155,7 @@ export class GameScene {
     vec.sub(this.camera.position).normalize();
     const dist = -this.camera.position.z / vec.z;
     vec.multiplyScalar(dist);
+    vec.z = 0;
     this.mousePos = vec;
   };
 }
