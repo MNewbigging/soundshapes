@@ -34,6 +34,9 @@ export class GameScene {
       return;
     }
 
+    // Start tracking mouse
+    window.addEventListener('mousemove', this.onMouseMove);
+
     let shapeMesh: THREE.Mesh;
     switch (eventParams.shape) {
       case Shape.BEATER:
@@ -135,8 +138,6 @@ export class GameScene {
   private update() {
     // If adding an object, update position of the mouse element
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
-      window.addEventListener('mousemove', this.onMouseMove);
-
       const mouseObj = this.objects.get(this.mouseObjectId);
       if (!mouseObj) {
         return;
