@@ -16,6 +16,7 @@ class HotKeys {
   }
 
   private readonly onKeyDown = (e: KeyboardEvent) => {
+    console.log('pressed key: ', e.key);
     // Only trigger callback for this key first frame it is pressed/held
     if (this.keysPressed.has(e.key)) {
       return;

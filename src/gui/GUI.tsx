@@ -11,7 +11,7 @@ export class GUI extends React.Component {
   public render() {
     return (
       <>
-        <ShapesToolbar visibility={this.guiState.guiVis} />
+        <ShapesToolbar guiState={this.guiState} />
       </>
     );
   }
