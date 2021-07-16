@@ -1,9 +1,5 @@
-import { action, observable } from 'mobx';
+import { GameScene } from './scene/GameScene';
 
 export class AppState {
-  @observable public count = 0;
-
-  @action incCount() {
-    this.count++;
-  }
+  private readonly gameScene = new GameScene();
 }
