@@ -6,7 +6,13 @@ import { Shape } from '../common/types/Shapes';
 import { RandomId } from '../utils/RandomId';
 import { GameUtils } from './GameUtils';
 
+enum GameSceneStates {
+  IDLE = 'idle',
+  ADDING_SHAPE = 'adding-shape',
+}
+
 export class GameScene {
+  private sceneState = GameSceneStates.IDLE;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
@@ -16,7 +22,7 @@ export class GameScene {
 
   constructor() {
     window.addEventListener('mousemove', this.onMouseMove);
-    eventManager.registerEventListener(EventType.ADD_SHAPE, this.startAddShape);
+    eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
     this.setupSceneBasics();
@@ -44,12 +50,14 @@ export class GameScene {
     const newId = RandomId.createId();
     this.mouseObjectId = newId;
     this.objects.set(newId, shapeMesh);
+    this.sceneState = GameSceneStates.ADDING_SHAPE;
   };
 
   private setupSceneBasics() {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setClearColor(0xffffff, 1);
+    this.renderer.domElement.onclick = this.onClickCanvas;
     document.body.appendChild(this.renderer.domElement);
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
@@ -75,6 +83,35 @@ export class GameScene {
     eventManager.fire(EventType.CANCEL_ADD);
   };
 
+  private readonly onClickCanvas = () => {
+    // Determine action based on current state
+    switch (this.sceneState) {
+      case GameSceneStates.IDLE:
+        break;
+      case GameSceneStates.ADDING_SHAPE:
+        this.addShape();
+        break;
+    }
+  };
+
+  private addShape() {
+    // TODO - can only place shape if there is space for it
+
+    // Get the shape we're adding
+    const shape = this.objects.get(this.mouseObjectId);
+    if (!shape) {
+      return;
+    }
+
+    // Place it in the scene
+    shape.position.set(this.mousePos.x, this.mousePos.y, 0);
+
+    // No longer adding a shape
+    this.mouseObjectId = '';
+    this.sceneState = GameSceneStates.IDLE;
+    eventManager.fire(EventType.ADD_SHAPE);
+  }
+
   // ########### GAME LOOP / UPDATE ###########
 
   private readonly gameLoop = () => {
@@ -87,7 +124,7 @@ export class GameScene {
 
   private update() {
     // If adding an object, update position of the mouse element
-    if (this.mouseObjectId) {
+    if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
       const mouseObj = this.objects.get(this.mouseObjectId);
       if (!mouseObj) {
         return;

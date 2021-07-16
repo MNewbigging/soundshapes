@@ -14,19 +14,19 @@ export class GuiState {
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
-    eventManager.registerEventListener(EventType.ADD_SHAPE, this.hideGui);
     eventManager.registerEventListener(EventType.CANCEL_ADD, this.showGui);
+    eventManager.registerEventListener(EventType.ADD_SHAPE, this.showGui);
   }
 
   public addBeater() {
     const eventParams: EventParams = {
       shape: Shape.BEATER,
     };
-    eventManager.fire(EventType.ADD_SHAPE, eventParams);
+    this.hideGui();
+    eventManager.fire(EventType.START_ADD_SHAPE, eventParams);
   }
 
   @action public showHelp() {
-    console.log('open help');
     this.helpDialogOpen = true;
   }
 

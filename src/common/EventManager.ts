@@ -1,7 +1,8 @@
 import { Shape } from './types/Shapes';
 
 export enum EventType {
-  ADD_SHAPE = 'add-beater',
+  START_ADD_SHAPE = 'start-add-shape',
+  ADD_SHAPE = 'add-shape',
   CANCEL_ADD = 'cancel-add',
 }
 
@@ -23,6 +24,7 @@ class EventManager {
   public fire(event: EventType, params?: EventParams) {
     const eventListeners = this.listeners.get(event) ?? [];
     if (eventListeners.length) {
+      console.log('firing event: ', event);
       eventListeners.forEach((el) => el(params));
     }
   }
