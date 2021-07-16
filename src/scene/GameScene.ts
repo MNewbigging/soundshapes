@@ -21,7 +21,6 @@ export class GameScene {
   private mousePos = new THREE.Vector3();
 
   constructor() {
-    window.addEventListener('mousemove', this.onMouseMove);
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
@@ -69,9 +68,7 @@ export class GameScene {
 
   private readonly cancelAddShape = () => {
     // On escape press, stop adding a shape
-    if (!this.mouseObjectId) {
-      return;
-    }
+    window.removeEventListener('mousemove', this.onMouseMove);
 
     const toRemove = this.objects.get(this.mouseObjectId);
     if (!toRemove) {
@@ -110,6 +107,7 @@ export class GameScene {
     this.mouseObjectId = '';
     this.sceneState = GameSceneStates.IDLE;
     eventManager.fire(EventType.ADD_SHAPE);
+    window.removeEventListener('mousemove', this.onMouseMove);
   }
 
   // ########### GAME LOOP / UPDATE ###########
@@ -125,12 +123,14 @@ export class GameScene {
   private update() {
     // If adding an object, update position of the mouse element
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
+      window.addEventListener('mousemove', this.onMouseMove);
+
       const mouseObj = this.objects.get(this.mouseObjectId);
       if (!mouseObj) {
         return;
       }
 
-      mouseObj.position.set(this.mousePos.x, this.mousePos.y, 2);
+      mouseObj.position.set(this.mousePos.x, this.mousePos.y, 0);
     }
   }
 
