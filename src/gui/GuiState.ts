@@ -1,14 +1,23 @@
 import { action, observable } from 'mobx';
 import { hotKeys } from '../common/HotKeys';
 
+export enum GuiVisibility {
+  OPEN = 'open',
+  CLOSED = 'closed',
+}
+
 export class GuiState {
-  @observable public shapesToolbarOpen = false;
+  @observable public guiVis = GuiVisibility.OPEN;
 
   constructor() {
-    hotKeys.registerHotKeyListener('t', this.toggleShapesToolbar);
+    hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
   }
 
-  @action public toggleShapesToolbar = () => {
-    this.shapesToolbarOpen = !this.shapesToolbarOpen;
+  @action public toggleGuiVisibility = () => {
+    if (this.guiVis === GuiVisibility.OPEN) {
+      this.guiVis = GuiVisibility.CLOSED;
+    } else {
+      this.guiVis = GuiVisibility.OPEN;
+    }
   };
 }

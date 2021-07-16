@@ -1,9 +1,14 @@
+$shapesToolbarWidth: 50px;
+
 .shapes-toolbar {
   position: fixed;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  //width: 50px;
-  //height: 100px;
-  //border: 1px solid black;
+  width: $shapesToolbarWidth;
+  transition: transform 0.2s ease-out;
+
+  &.closed {
+    transform: translate(-$shapesToolbarWidth, -50%);
+  }
 }
