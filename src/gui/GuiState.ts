@@ -9,6 +9,7 @@ export enum GuiVisibility {
 
 export class GuiState {
   @observable public guiVis = GuiVisibility.OPEN;
+  @observable public helpDialogOpen = false;
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
@@ -17,8 +18,16 @@ export class GuiState {
   }
 
   public addBeater() {
-    console.log('addbeater');
     eventManager.fire(EventType.ADD_BEATER);
+  }
+
+  @action public showHelp() {
+    console.log('open help');
+    this.helpDialogOpen = true;
+  }
+
+  @action public closeHelp() {
+    this.helpDialogOpen = false;
   }
 
   @action private readonly toggleGuiVisibility = () => {

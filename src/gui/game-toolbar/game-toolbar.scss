@@ -1,0 +1,13 @@
+@import '../gui-variables.scss';
+
+.game-toolbar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.2s ease-out;
+
+  &.closed {
+    transform: translate(-50%, -$toolbarDepth);
+  }
+}

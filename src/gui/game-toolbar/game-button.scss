@@ -1,6 +1,6 @@
 @import '../gui-variables.scss';
 
-.shape-button {
+.game-button {
   width: $buttonSize;
   height: $buttonSize;
   background-color: $buttonBackgroundColor;
@@ -8,9 +8,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.beater {
-  border-radius: 50%;
-  border: 1px solid $buttonTextColor;
+  &.help {
+    color: $buttonTextColor;
+    font-weight: bolder;
+    font-size: x-large;
+  }
 }
