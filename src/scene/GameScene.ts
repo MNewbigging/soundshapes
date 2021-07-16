@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import { eventManager, EventType } from '../common/EventManager';
+
+import { eventManager, EventParams, EventType } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
+import { Shape } from '../common/types/Shapes';
 import { GameUtils } from './GameUtils';
 
 export class GameScene {
@@ -13,23 +15,36 @@ export class GameScene {
 
   constructor() {
     window.addEventListener('mousemove', this.onMouseMove);
-    eventManager.registerEventListener(EventType.ADD_BEATER, this.startAddBeater);
+    eventManager.registerEventListener(EventType.ADD_SHAPE, this.startAddShape);
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
     this.setupSceneBasics();
     this.gameLoop();
   }
 
-  public startAddBeater = () => {
-    const beaterMesh = GameUtils.createBeaterShape();
-    beaterMesh.position.set(0, 0, 2);
+  public startAddShape = (eventParams: EventParams) => {
+    // Determine which shape to make from params
+    if (!eventParams.shape) {
+      return;
+    }
 
-    this.scene.add(beaterMesh);
+    let shapeMesh: THREE.Mesh;
+    switch (eventParams.shape) {
+      case Shape.BEATER:
+        shapeMesh = GameUtils.createBeaterShape();
+        break;
+      default:
+        return;
+    }
+
+    shapeMesh.position.set(0, 0, 2);
+    this.scene.add(shapeMesh);
+
+    // TODO - create random unique id for the shape in the scene
     this.mouseObjectId = 'beater';
-    this.objects.set('beater', beaterMesh);
+    this.objects.set('beater', shapeMesh);
   };
 
-  // Create the scene, camera, renderer
   private setupSceneBasics() {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);

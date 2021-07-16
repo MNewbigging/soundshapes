@@ -1,6 +1,7 @@
 import { action, observable } from 'mobx';
-import { eventManager, EventType } from '../common/EventManager';
+import { eventManager, EventParams, EventType } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
+import { Shape } from '../common/types/Shapes';
 
 export enum GuiVisibility {
   OPEN = 'open',
@@ -13,12 +14,15 @@ export class GuiState {
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
-    eventManager.registerEventListener(EventType.ADD_BEATER, this.hideGui);
+    eventManager.registerEventListener(EventType.ADD_SHAPE, this.hideGui);
     eventManager.registerEventListener(EventType.CANCEL_ADD, this.showGui);
   }
 
   public addBeater() {
-    eventManager.fire(EventType.ADD_BEATER);
+    const eventParams: EventParams = {
+      shape: Shape.BEATER,
+    };
+    eventManager.fire(EventType.ADD_SHAPE, eventParams);
   }
 
   @action public showHelp() {

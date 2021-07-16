@@ -1,9 +1,15 @@
+import { Shape } from './types/Shapes';
+
 export enum EventType {
-  ADD_BEATER = 'add-beater',
+  ADD_SHAPE = 'add-beater',
   CANCEL_ADD = 'cancel-add',
 }
 
-type EventListener = () => void;
+export interface EventParams {
+  shape?: Shape;
+}
+
+type EventListener = (eventParams?: EventParams) => void;
 
 class EventManager {
   private readonly listeners = new Map<EventType, EventListener[]>();
@@ -14,10 +20,10 @@ class EventManager {
     this.listeners.set(event, currentListeners);
   }
 
-  public fire(event: EventType) {
+  public fire(event: EventType, params?: EventParams) {
     const eventListeners = this.listeners.get(event) ?? [];
     if (eventListeners.length) {
-      eventListeners.forEach((el) => el());
+      eventListeners.forEach((el) => el(params));
     }
   }
 }
