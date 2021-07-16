@@ -32,7 +32,6 @@ export class Dialog extends React.Component<Props> {
   }
 
   @action private startClosing() {
-    // Start the closing animation
     this.className = 'closing';
   }
 
