@@ -1,18 +1,19 @@
-import { Shape } from 'three';
-import { ShapeType } from './types/Shapes';
+import { Shape, ShapeType } from './types/Shapes';
 
 export enum EventType {
   START_ADD_SHAPE = 'start-add-shape',
   ADD_SHAPE = 'add-shape',
   CANCEL_ADD = 'cancel-add',
   SELECT_SHAPE = 'select-shape',
+  DESELECT_SHAPE = 'deselect-shape',
 }
 
 export type GameEvent =
   | { e: EventType.START_ADD_SHAPE; shapeType: ShapeType }
   | { e: EventType.ADD_SHAPE }
   | { e: EventType.CANCEL_ADD }
-  | { e: EventType.SELECT_SHAPE; shape: Shape };
+  | { e: EventType.SELECT_SHAPE; shape: Shape }
+  | { e: EventType.DESELECT_SHAPE };
 
 type EventListener = (gameEvent: GameEvent) => void;
 
@@ -26,9 +27,9 @@ class EventManager {
   }
 
   public fire(event: GameEvent) {
+    console.log('firing event: ', event);
     const eventListeners = this.listeners.get(event.e) ?? [];
     if (eventListeners.length) {
-      console.log('firing event: ', event);
       eventListeners.forEach((el) => el(event));
     }
   }

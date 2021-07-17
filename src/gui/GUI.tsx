@@ -5,6 +5,7 @@ import { HelpDialog } from './dialogs/HelpDialog';
 import { GameToolbar } from './game-toolbar/GameToolbar';
 
 import { GuiState } from './GuiState';
+import { PropsToolbar } from './props-toolbar/PropsToolbar';
 import { ShapesToolbar } from './shapes-toolbar/ShapesToolbar';
 
 @observer
@@ -16,6 +17,7 @@ export class GUI extends React.Component {
       <>
         <ShapesToolbar guiState={this.guiState} />
         <GameToolbar guiState={this.guiState} />
+        <PropsToolbar guiState={this.guiState} />
 
         <Dialog
           open={this.guiState.helpDialogOpen}

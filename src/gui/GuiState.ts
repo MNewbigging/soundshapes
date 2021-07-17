@@ -1,5 +1,5 @@
 import { action, observable } from 'mobx';
-import { eventManager, EventType } from '../common/EventManager';
+import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { ShapeType } from '../common/types/Shapes';
 
@@ -10,12 +10,15 @@ export enum GuiVisibility {
 
 export class GuiState {
   @observable public guiVis = GuiVisibility.OPEN;
+  @observable public propsVis = GuiVisibility.CLOSED;
   @observable public helpDialogOpen = false;
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
     eventManager.registerEventListener(EventType.CANCEL_ADD, this.showGui);
     eventManager.registerEventListener(EventType.ADD_SHAPE, this.showGui);
+    eventManager.registerEventListener(EventType.SELECT_SHAPE, this.onSelectShape);
+    eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
   }
 
   public addBeater() {
@@ -37,17 +40,38 @@ export class GuiState {
     } else {
       this.guiVis = GuiVisibility.OPEN;
     }
+
+    if (this.propsVis === GuiVisibility.OPEN) {
+      // There is a shape selected, deselect it
+      eventManager.fire({ e: EventType.DESELECT_SHAPE });
+    }
   };
 
-  private readonly hideGui = () => {
+  @action private readonly hideGui = () => {
     if (this.guiVis === GuiVisibility.OPEN) {
       this.guiVis = GuiVisibility.CLOSED;
     }
   };
 
-  private readonly showGui = () => {
+  @action private readonly showGui = () => {
     if (this.guiVis === GuiVisibility.CLOSED) {
       this.guiVis = GuiVisibility.OPEN;
+    }
+  };
+
+  private readonly onSelectShape = (event: GameEvent) => {
+    // Set the shape in state for toolbar to use
+
+    // Show the toolbar if currently hidden
+    if (this.propsVis === GuiVisibility.CLOSED) {
+      this.propsVis = GuiVisibility.OPEN;
+    }
+  };
+
+  private readonly onDeselectShape = (_event: GameEvent) => {
+    // Clear the shape in state
+    if (this.propsVis === GuiVisibility.OPEN) {
+      this.propsVis = GuiVisibility.CLOSED;
     }
   };
 }

@@ -22,6 +22,7 @@ export class GameScene {
 
   constructor() {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
+    eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
     this.setupSceneBasics();
@@ -99,13 +100,15 @@ export class GameScene {
       case GameSceneStates.IDLE:
         // Set mouse position first
         this.setMousePosition(e);
-        for (const shape of this.shapes) {
-          if (GameUtils.meshContainsPoint(shape.mesh, this.mousePos)) {
-            console.log('selected shape: ', shape.type);
-            this.selectShape(shape);
-            break;
-          }
+
+        // Did user select a shape?
+        const clickedShape = GameUtils.clickedShape(this.shapes, this.mousePos);
+        if (clickedShape) {
+          this.selectShape(clickedShape);
+        } else {
+          this.deselectShape();
         }
+
         break;
       case GameSceneStates.ADDING_SHAPE:
         this.addShape();
@@ -146,7 +149,18 @@ export class GameScene {
 
   private selectShape(shape: Shape) {
     this.selectedShape = shape;
-    // Fire selection event
+    eventManager.fire({ e: EventType.SELECT_SHAPE, shape });
+  }
+
+  private readonly onDeselectShape = (_event: GameEvent) => {
+    this.deselectShape();
+  };
+
+  private deselectShape() {
+    if (this.selectedShape) {
+      this.selectedShape = undefined;
+      eventManager.fire({ e: EventType.DESELECT_SHAPE });
+    }
   }
 
   // ########### GAME LOOP / UPDATE ###########

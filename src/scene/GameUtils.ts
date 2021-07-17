@@ -1,6 +1,16 @@
 import * as THREE from 'three';
+import { Shape } from '../common/types/Shapes';
 
 export class GameUtils {
+  public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
+    for (const shape of shapes) {
+      if (GameUtils.meshContainsPoint(shape.mesh, mousePos)) {
+        return shape;
+      }
+    }
+    return undefined;
+  }
+
   // Assumes pre-computed bounding boxes
   public static meshesIntersectAABB(meshA: THREE.Mesh, meshB: THREE.Mesh) {
     const boxA = new THREE.Box3().copy(meshA.geometry.boundingBox).applyMatrix4(meshA.matrixWorld);
