@@ -9,6 +9,12 @@ export class GameUtils {
     return boxA.intersectsBox(boxB);
   }
 
+  public static meshContainsPoint(mesh: THREE.Mesh, point: THREE.Vector3) {
+    const box = new THREE.Box3().copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+
+    return box.containsPoint(point);
+  }
+
   public static createBeaterShape() {
     const beaterRadius = 3;
     const beaterSegments = 20;

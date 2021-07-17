@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { eventManager, EventParams, EventType } from '../common/EventManager';
+import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { Beater, Shape, ShapeType } from '../common/types/Shapes';
 import { GameUtils } from './GameUtils';
@@ -18,6 +18,7 @@ export class GameScene {
   private readonly shapes: Shape[] = [];
   private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
+  private selectedShape?: Shape;
 
   constructor() {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
@@ -41,13 +42,13 @@ export class GameScene {
     this.scene = new THREE.Scene();
   }
 
-  private readonly startAddShape = (eventParams: EventParams) => {
+  private readonly startAddShape = (event: GameEvent) => {
+    // Can't add multiple at once
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
       return;
     }
-
-    // Determine which shape to make from params
-    if (!eventParams.shapeType) {
+    // Ensures event type is correct to proceed
+    if (event.e !== EventType.START_ADD_SHAPE) {
       return;
     }
 
@@ -56,9 +57,9 @@ export class GameScene {
 
     // Make the shape class for the given shape type
     let shape: Shape;
-    switch (eventParams.shapeType) {
+    switch (event.shapeType) {
       case ShapeType.BEATER:
-        shape = new Beater(eventParams.shapeType, GameUtils.createBeaterShape());
+        shape = new Beater(event.shapeType, GameUtils.createBeaterShape());
         break;
       default:
         return;
@@ -89,22 +90,20 @@ export class GameScene {
     // Update scene state
     this.sceneState = GameSceneStates.IDLE;
     // Fire cancellation event
-    eventManager.fire(EventType.CANCEL_ADD);
+    eventManager.fire({ e: EventType.CANCEL_ADD });
   };
 
   private readonly onClickCanvas = (e: MouseEvent) => {
     // Determine action based on current state
     switch (this.sceneState) {
       case GameSceneStates.IDLE:
-        console.log('testing for select shape');
-        // Set mouse position
+        // Set mouse position first
         this.setMousePosition(e);
-        // Determine if clicked on shape
         for (const shape of this.shapes) {
-          const box = new THREE.Box3();
-          box.copy(shape.mesh.geometry.boundingBox).applyMatrix4(shape.mesh.matrixWorld);
-          if (box.containsPoint(this.mousePos)) {
-            console.log('clicked on mesh!');
+          if (GameUtils.meshContainsPoint(shape.mesh, this.mousePos)) {
+            console.log('selected shape: ', shape.type);
+            this.selectShape(shape);
+            break;
           }
         }
         break;
@@ -140,9 +139,14 @@ export class GameScene {
     // Remove reference to it, update state, fire addition event
     this.mouseShape = undefined;
     this.sceneState = GameSceneStates.IDLE;
-    eventManager.fire(EventType.ADD_SHAPE);
+    eventManager.fire({ e: EventType.ADD_SHAPE });
     // Stop listening to mouse movement
     window.removeEventListener('mousemove', this.setMousePosition);
+  }
+
+  private selectShape(shape: Shape) {
+    this.selectedShape = shape;
+    // Fire selection event
   }
 
   // ########### GAME LOOP / UPDATE ###########

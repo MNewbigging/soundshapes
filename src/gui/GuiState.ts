@@ -1,5 +1,5 @@
 import { action, observable } from 'mobx';
-import { eventManager, EventParams, EventType } from '../common/EventManager';
+import { eventManager, EventType } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { ShapeType } from '../common/types/Shapes';
 
@@ -19,11 +19,8 @@ export class GuiState {
   }
 
   public addBeater() {
-    const eventParams: EventParams = {
-      shapeType: ShapeType.BEATER,
-    };
     this.hideGui();
-    eventManager.fire(EventType.START_ADD_SHAPE, eventParams);
+    eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType: ShapeType.BEATER });
   }
 
   @action public showHelp() {

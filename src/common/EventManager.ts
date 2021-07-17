@@ -1,16 +1,20 @@
+import { Shape } from 'three';
 import { ShapeType } from './types/Shapes';
 
 export enum EventType {
   START_ADD_SHAPE = 'start-add-shape',
   ADD_SHAPE = 'add-shape',
   CANCEL_ADD = 'cancel-add',
+  SELECT_SHAPE = 'select-shape',
 }
 
-export interface EventParams {
-  shapeType?: ShapeType;
-}
+export type GameEvent =
+  | { e: EventType.START_ADD_SHAPE; shapeType: ShapeType }
+  | { e: EventType.ADD_SHAPE }
+  | { e: EventType.CANCEL_ADD }
+  | { e: EventType.SELECT_SHAPE; shape: Shape };
 
-type EventListener = (eventParams?: EventParams) => void;
+type EventListener = (gameEvent: GameEvent) => void;
 
 class EventManager {
   private readonly listeners = new Map<EventType, EventListener[]>();
@@ -21,11 +25,11 @@ class EventManager {
     this.listeners.set(event, currentListeners);
   }
 
-  public fire(event: EventType, params?: EventParams) {
-    const eventListeners = this.listeners.get(event) ?? [];
+  public fire(event: GameEvent) {
+    const eventListeners = this.listeners.get(event.e) ?? [];
     if (eventListeners.length) {
       console.log('firing event: ', event);
-      eventListeners.forEach((el) => el(params));
+      eventListeners.forEach((el) => el(event));
     }
   }
 }
