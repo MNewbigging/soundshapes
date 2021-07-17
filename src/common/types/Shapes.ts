@@ -8,7 +8,7 @@ export enum ShapeType {
   BEATER = 'beater',
 }
 
-export class Shape {
+export abstract class Shape {
   public id: string;
   public type: ShapeType;
   @observable public mesh: THREE.Mesh;
@@ -34,10 +34,17 @@ export class Shape {
     this.posX = pos.x;
     this.posY = pos.y;
   }
+
+  public abstract addToScene(scene: THREE.Scene): void;
 }
 
 export class Beater extends Shape {
   @observable public speed = 1;
+  @observable public direction = new THREE.Vector3(0, 1, 0);
+
+  public addToScene(scene: THREE.Scene) {
+    scene.add(this.mesh);
+  }
 
   @action public setSpeed(speed: number) {
     this.speed = speed;

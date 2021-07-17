@@ -22,20 +22,10 @@ export class PositionEditor extends React.Component<Props> {
         <div className={'ui-button'}>P</div>
         <div className={'drawer position-drawer'}>
           <div className={'label'}>X: </div>
-          <input
-            className={'input'}
-            type={'number'}
-            defaultValue={shape.posX}
-            onChange={this.setPosX}
-          />
+          <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} />
 
           <div className={'label'}>Y:</div>
-          <input
-            className={'input'}
-            type={'number'}
-            defaultValue={shape.posY}
-            onChange={this.setPosY}
-          />
+          <input className={'input'} type={'number'} value={shape.posY} onChange={this.setPosY} />
         </div>
       </div>
     );

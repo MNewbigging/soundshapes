@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Beater, Shape, ShapeType } from '../../common/types/Shapes';
 import { GuiState } from '../GuiState';
+import { DirectionEditor } from './DirectionEditor';
 import { PositionEditor } from './PositionEditor';
 import { SpeedEditor } from './SpeedEditor';
 
@@ -30,10 +31,11 @@ export class PropsToolbar extends React.Component<Props> {
       case ShapeType.BEATER:
         const beater = shape as Beater;
         return (
-          <>
+          <div>
             <PositionEditor shape={beater} />
             <SpeedEditor beater={beater} />
-          </>
+            <DirectionEditor beater={beater} />
+          </div>
         );
 
       default:

@@ -76,7 +76,7 @@ export class GameScene {
     }
 
     // Add to scene, save ref to object, update scene state
-    this.scene.add(shape.mesh);
+    shape.addToScene(this.scene);
     this.mouseShape = shape;
     this.sceneState = GameSceneStates.ADDING_SHAPE;
   };
@@ -144,13 +144,14 @@ export class GameScene {
     // Set the new position
     this.mouseShape.setPosition(this.mousePos);
 
-    // Add mouse object to objects
+    // Add to shapes pool
     this.shapes.push(this.mouseShape);
 
     // Remove reference to it, update state, fire addition event
     this.mouseShape = undefined;
     this.sceneState = GameSceneStates.IDLE;
     eventManager.fire({ e: EventType.ADD_SHAPE });
+
     // Stop listening to mouse movement
     window.removeEventListener('mousemove', this.setMousePosition);
   }

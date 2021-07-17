@@ -13,7 +13,8 @@ export class GuiState {
   @observable public guiVis = GuiVisibility.OPEN;
   @observable public propsVis = GuiVisibility.CLOSED;
   @observable public helpDialogOpen = false;
-  public selectedShape?: Shape;
+  @observable public selectedShape?: Shape;
+  private closingPropsToolbar = false;
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
@@ -69,10 +70,17 @@ export class GuiState {
     }
   };
 
-  private readonly onSelectShape = (event: GameEvent) => {
+  @action private closePropsToolbar() {
+    if (this.closingPropsToolbar) {
+      this.selectedShape = undefined;
+    }
+  }
+
+  @action private readonly onSelectShape = (event: GameEvent) => {
     // Set the shape in state for toolbar to use
     if (event.e === EventType.SELECT_SHAPE) {
       this.selectedShape = event.shape;
+      this.closingPropsToolbar = false;
     }
 
     // Show the toolbar if currently hidden
@@ -82,8 +90,9 @@ export class GuiState {
   };
 
   private readonly onDeselectShape = (_event: GameEvent) => {
-    // Clear the shape in state
-    this.selectedShape = undefined;
+    // Clear the shape in state after closing animation
+    this.closingPropsToolbar = true;
+    setTimeout(() => this.closePropsToolbar(), 300);
 
     // Close the props toolbar
     if (this.propsVis === GuiVisibility.OPEN) {
