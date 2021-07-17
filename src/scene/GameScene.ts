@@ -144,6 +144,13 @@ export class GameScene {
     // Set the new position
     this.mouseShape.setPosition(this.mousePos);
 
+    // If a beater, show direction line now
+    if (this.mouseShape.type === ShapeType.BEATER) {
+      const beater = this.mouseShape as Beater;
+      beater.updateDirectionLine();
+      beater.showDirectionLine(this.scene);
+    }
+
     // Add to shapes pool
     this.shapes.push(this.mouseShape);
 
@@ -217,12 +224,12 @@ export class GameScene {
   private readonly gameLoop = () => {
     requestAnimationFrame(this.gameLoop);
 
-    this.update();
+    this.editModeUpdate();
 
     this.renderer.render(this.scene, this.camera);
   };
 
-  private update() {
+  private editModeUpdate() {
     // If adding an object, update position of the mouse element
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
       if (this.mouseShape) {
