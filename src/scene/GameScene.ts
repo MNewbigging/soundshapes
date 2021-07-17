@@ -16,7 +16,7 @@ export class GameScene {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private readonly objects = new Map<string, THREE.Mesh>();
+  private readonly objects: THREE.Mesh[] = [];
   private mouseObject?: THREE.Mesh;
   private mousePos = new THREE.Vector3();
 
@@ -101,7 +101,7 @@ export class GameScene {
         // Set mouse position
         this.setMousePosition(e);
         // Determine if clicked on shape
-        for (const mesh of Array.from(this.objects.values())) {
+        for (const mesh of this.objects) {
           const box = new THREE.Box3();
           box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
           if (box.containsPoint(this.mousePos)) {
@@ -121,21 +121,21 @@ export class GameScene {
     }
 
     // Ensure this new shape doesn't intersect any others in the scene
-    // for (const mesh of Array.from(this.objects.values())) {
-    //   const intersects = shape.geometry.boundingBox.intersectsBox(mesh.geometry.boundingBox);
-    //   if (intersects) {
-    //     console.log('cannot place on top of other shapes');
-    //     return;
-    //   }
-    // }
+    this.mouseObject.geometry.computeBoundingBox();
+    for (const mesh of this.objects) {
+      const intersects = GameUtils.meshesIntersectAABB(this.mouseObject, mesh);
+      if (intersects) {
+        console.log('cannot place on top of other shapes');
+        return;
+      }
+    }
 
     // Place in scene, create bounding box
     this.mouseObject.position.set(this.mousePos.x, this.mousePos.y, 0);
     this.mouseObject.geometry.computeBoundingBox();
 
     // Add mouse object to objects map
-    const newId = RandomId.createId();
-    this.objects.set(newId, this.mouseObject);
+    this.objects.push(this.mouseObject);
 
     // Remove reference to it, update state, fire addition event
     this.mouseObject = undefined;
