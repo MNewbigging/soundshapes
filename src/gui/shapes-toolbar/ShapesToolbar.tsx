@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 
-import { Shape } from '../../common/types/Shapes';
+import { ShapeType } from '../../common/types/Shapes';
 import { GuiState } from '../GuiState';
 
 import { ShapeButton } from './ShapeButton';
@@ -19,7 +19,7 @@ export class ShapesToolbar extends React.Component<Props> {
 
     return (
       <div className={'shapes-toolbar ' + guiState.guiVis}>
-        <ShapeButton shape={Shape.BEATER} onClick={() => guiState.addBeater()} />
+        <ShapeButton shape={ShapeType.BEATER} onClick={() => guiState.addBeater()} />
       </div>
     );
   }

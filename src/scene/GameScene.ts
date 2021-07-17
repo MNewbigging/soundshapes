@@ -2,8 +2,7 @@ import * as THREE from 'three';
 
 import { eventManager, EventParams, EventType } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
-import { Shape } from '../common/types/Shapes';
-import { RandomId } from '../utils/RandomId';
+import { Beater, Shape, ShapeType } from '../common/types/Shapes';
 import { GameUtils } from './GameUtils';
 
 enum GameSceneStates {
@@ -16,8 +15,8 @@ export class GameScene {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private readonly objects: THREE.Mesh[] = [];
-  private mouseObject?: THREE.Mesh;
+  private readonly shapes: Shape[] = [];
+  private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
 
   constructor() {
@@ -48,26 +47,26 @@ export class GameScene {
     }
 
     // Determine which shape to make from params
-    if (!eventParams.shape) {
+    if (!eventParams.shapeType) {
       return;
     }
 
     // Start tracking mouse
     window.addEventListener('mousemove', this.setMousePosition);
 
-    // Make a mesh for the given shape
-    let shapeMesh: THREE.Mesh;
-    switch (eventParams.shape) {
-      case Shape.BEATER:
-        shapeMesh = GameUtils.createBeaterShape();
+    // Make the shape class for the given shape type
+    let shape: Shape;
+    switch (eventParams.shapeType) {
+      case ShapeType.BEATER:
+        shape = new Beater(eventParams.shapeType, GameUtils.createBeaterShape());
         break;
       default:
         return;
     }
 
     // Add to scene, save ref to object, update scene state
-    this.scene.add(shapeMesh);
-    this.mouseObject = shapeMesh;
+    this.scene.add(shape.mesh);
+    this.mouseShape = shape;
     this.sceneState = GameSceneStates.ADDING_SHAPE;
   };
 
@@ -79,14 +78,14 @@ export class GameScene {
     // Stop listening to mouse movement
     window.removeEventListener('mousemove', this.setMousePosition);
 
-    if (!this.mouseObject) {
+    if (!this.mouseShape) {
       return;
     }
 
     // Remove the mouse object from the scene
-    this.scene.remove(this.mouseObject);
+    this.scene.remove(this.mouseShape.mesh);
     // Lose ref to mouse object
-    this.mouseObject = undefined;
+    this.mouseShape = undefined;
     // Update scene state
     this.sceneState = GameSceneStates.IDLE;
     // Fire cancellation event
@@ -101,9 +100,9 @@ export class GameScene {
         // Set mouse position
         this.setMousePosition(e);
         // Determine if clicked on shape
-        for (const mesh of this.objects) {
+        for (const shape of this.shapes) {
           const box = new THREE.Box3();
-          box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+          box.copy(shape.mesh.geometry.boundingBox).applyMatrix4(shape.mesh.matrixWorld);
           if (box.containsPoint(this.mousePos)) {
             console.log('clicked on mesh!');
           }
@@ -116,29 +115,30 @@ export class GameScene {
   };
 
   private addShape() {
-    if (!this.mouseObject) {
+    if (!this.mouseShape) {
       return;
     }
 
     // Ensure this new shape doesn't intersect any others in the scene
-    this.mouseObject.geometry.computeBoundingBox();
-    for (const mesh of this.objects) {
-      const intersects = GameUtils.meshesIntersectAABB(this.mouseObject, mesh);
+    this.mouseShape.mesh.geometry.computeBoundingBox();
+    for (const shape of this.shapes) {
+      const intersects = GameUtils.meshesIntersectAABB(this.mouseShape.mesh, shape.mesh);
       if (intersects) {
+        // TODO - should have some visual cue to say the placement didn't work
         console.log('cannot place on top of other shapes');
         return;
       }
     }
 
     // Place in scene, create bounding box
-    this.mouseObject.position.set(this.mousePos.x, this.mousePos.y, 0);
-    this.mouseObject.geometry.computeBoundingBox();
+    this.mouseShape.mesh.position.set(this.mousePos.x, this.mousePos.y, 0);
+    this.mouseShape.mesh.geometry.computeBoundingBox();
 
     // Add mouse object to objects map
-    this.objects.push(this.mouseObject);
+    this.shapes.push(this.mouseShape);
 
     // Remove reference to it, update state, fire addition event
-    this.mouseObject = undefined;
+    this.mouseShape = undefined;
     this.sceneState = GameSceneStates.IDLE;
     eventManager.fire(EventType.ADD_SHAPE);
     // Stop listening to mouse movement
@@ -158,8 +158,8 @@ export class GameScene {
   private update() {
     // If adding an object, update position of the mouse element
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
-      if (this.mouseObject) {
-        this.mouseObject.position.set(this.mousePos.x, this.mousePos.y, 0);
+      if (this.mouseShape) {
+        this.mouseShape.mesh.position.set(this.mousePos.x, this.mousePos.y, 0);
       }
     }
   }

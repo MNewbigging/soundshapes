@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Shape } from '../../common/types/Shapes';
+import { ShapeType } from '../../common/types/Shapes';
 
 import './shape-button.scss';
 
 interface Props {
-  shape: Shape;
+  shape: ShapeType;
   onClick: () => void;
 }
 
@@ -26,7 +26,7 @@ export class ShapeButton extends React.Component<Props> {
     const { shape } = this.props;
 
     switch (shape) {
-      case Shape.BEATER:
+      case ShapeType.BEATER:
         return <BeaterIcon />;
 
       default:

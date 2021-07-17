@@ -1,4 +1,4 @@
-import { Shape } from './types/Shapes';
+import { ShapeType } from './types/Shapes';
 
 export enum EventType {
   START_ADD_SHAPE = 'start-add-shape',
@@ -7,7 +7,7 @@ export enum EventType {
 }
 
 export interface EventParams {
-  shape?: Shape;
+  shapeType?: ShapeType;
 }
 
 type EventListener = (eventParams?: EventParams) => void;
