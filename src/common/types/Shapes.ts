@@ -1,5 +1,6 @@
 // tslint:disable: max-classes-per-file
 
+import { action, observable } from 'mobx';
 import * as THREE from 'three';
 
 export enum ShapeType {
@@ -19,4 +20,10 @@ export abstract class Shape {
   }
 }
 
-export class Beater extends Shape {}
+export class Beater extends Shape {
+  @observable public speed = 1;
+
+  @action public setSpeed(speed: number) {
+    this.speed = speed;
+  }
+}

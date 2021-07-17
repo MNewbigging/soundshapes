@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 
-import { Shape, ShapeType } from '../../common/types/Shapes';
+import { Beater, Shape, ShapeType } from '../../common/types/Shapes';
 import { GuiState } from '../GuiState';
 import { SpeedEditor } from './SpeedEditor';
 
@@ -27,7 +27,7 @@ export class PropsToolbar extends React.Component<Props> {
   private getShapePropertyEditors(shape: Shape) {
     switch (shape.type) {
       case ShapeType.BEATER:
-        return <SpeedEditor />;
+        return <SpeedEditor beater={shape as Beater} />;
       default:
         return <></>;
     }
