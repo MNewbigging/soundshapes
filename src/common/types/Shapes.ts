@@ -27,6 +27,10 @@ export class Shape {
 
   @action public setPosition(pos: THREE.Vector3) {
     this.mesh.position.set(pos.x, pos.y, 0);
+    this.mesh.geometry.computeBoundingBox();
+    this.mesh.updateMatrixWorld();
+
+    // For updating UI
     this.posX = pos.x;
     this.posY = pos.y;
   }

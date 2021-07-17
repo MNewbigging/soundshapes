@@ -13,7 +13,7 @@ interface Props {
 export class SpeedEditor extends React.Component<Props> {
   public render() {
     const { beater } = this.props;
-    console.log('render speed editor');
+
     return (
       <div className={'drawer-parent speed-editor'}>
         <div className={'ui-button'}>S</div>

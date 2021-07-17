@@ -4,7 +4,7 @@ import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { Beater, Shape, ShapeType } from '../common/types/Shapes';
 import { RandomId } from '../utils/RandomId';
-import { GameUtils } from './GameUtils';
+import { GameUtils, screenLimits } from './GameUtils';
 
 enum GameSceneStates {
   IDLE = 'idle',
@@ -40,7 +40,12 @@ export class GameScene {
     this.renderer.domElement.onclick = this.onClickCanvas;
     document.body.appendChild(this.renderer.domElement);
 
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    this.camera = new THREE.PerspectiveCamera(
+      screenLimits.fov,
+      window.innerWidth / window.innerHeight,
+      1,
+      500
+    );
     this.camera.position.set(0, 0, 100);
     this.camera.lookAt(0, 0, 0);
 
@@ -136,11 +141,10 @@ export class GameScene {
       }
     }
 
-    // Place in scene, create bounding box
+    // Set the new position
     this.mouseShape.setPosition(this.mousePos);
-    this.mouseShape.mesh.geometry.computeBoundingBox();
 
-    // Add mouse object to objects map
+    // Add mouse object to objects
     this.shapes.push(this.mouseShape);
 
     // Remove reference to it, update state, fire addition event
@@ -188,14 +192,23 @@ export class GameScene {
     if (event.e !== EventType.REPOSITION_SHAPE || !this.selectedShape) {
       return;
     }
-    const newPos = event.newPos;
-    // On receiving a position change event, check new pos is ok to move to
 
-    // Then move the selected shape to its new position
+    const newPos = event.newPos;
+    const oldPos = new THREE.Vector3().copy(this.selectedShape.mesh.position);
+
+    // First, move shape to new position
     this.selectedShape.setPosition(newPos);
 
-    // Adjust selected shape outline too
-    this.selectedShapeOutline.position.set(newPos.x, newPos.y, 0);
+    // Then, check for collisions - if any, move it back
+    const others = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
+    const collides = GameUtils.shapeIntersectsOthers(this.selectedShape, others);
+
+    if (collides) {
+      this.selectedShape.setPosition(oldPos);
+    } else {
+      // Adjust selected shape outline too
+      this.selectedShapeOutline.position.set(newPos.x, newPos.y, 0);
+    }
   };
 
   // ########### GAME LOOP / UPDATE ###########
@@ -212,6 +225,7 @@ export class GameScene {
     // If adding an object, update position of the mouse element
     if (this.sceneState === GameSceneStates.ADDING_SHAPE) {
       if (this.mouseShape) {
+        // Do this 'manually' (not in shape class) to avoid computing bounding box each tick
         this.mouseShape.mesh.position.set(this.mousePos.x, this.mousePos.y, 0);
       }
     }

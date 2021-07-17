@@ -1,6 +1,18 @@
 import * as THREE from 'three';
 import { Shape } from '../common/types/Shapes';
 
+export interface ScreenLimits {
+  fov: number;
+  xMax: number;
+  yMax: number;
+}
+
+export const screenLimits: ScreenLimits = {
+  fov: 60,
+  xMax: 105.5,
+  yMax: 54.5,
+};
+
 export class GameUtils {
   public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
     for (const shape of shapes) {
@@ -10,6 +22,16 @@ export class GameUtils {
     }
 
     return undefined;
+  }
+
+  public static shapeIntersectsOthers(shape: Shape, others: Shape[]): boolean {
+    for (const other of others) {
+      if (GameUtils.meshesIntersectAABB(shape.mesh, other.mesh)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Assumes pre-computed bounding boxes
