@@ -23,10 +23,12 @@ export class GuiState {
 
   public addBeater() {
     this.hideGui();
+    this.mainGuiClick();
     eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType: ShapeType.BEATER });
   }
 
   @action public showHelp() {
+    this.mainGuiClick();
     this.helpDialogOpen = true;
   }
 
@@ -34,16 +36,22 @@ export class GuiState {
     this.helpDialogOpen = false;
   }
 
+  private mainGuiClick() {
+    // When clicking anything on left or top toolbar, deselect any selected shape
+    if (this.propsVis === GuiVisibility.OPEN) {
+      eventManager.fire({ e: EventType.DESELECT_SHAPE });
+    }
+  }
+
   @action private readonly toggleGuiVisibility = () => {
     if (this.guiVis === GuiVisibility.OPEN) {
       this.guiVis = GuiVisibility.CLOSED;
+      // If we've just turned ui off, also deselect shape
+      if (this.propsVis === GuiVisibility.OPEN) {
+        eventManager.fire({ e: EventType.DESELECT_SHAPE });
+      }
     } else {
       this.guiVis = GuiVisibility.OPEN;
-    }
-
-    if (this.propsVis === GuiVisibility.OPEN) {
-      // There is a shape selected, deselect it
-      eventManager.fire({ e: EventType.DESELECT_SHAPE });
     }
   };
 

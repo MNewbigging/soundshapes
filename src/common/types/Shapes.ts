@@ -8,10 +8,12 @@ export enum ShapeType {
 }
 
 export abstract class Shape {
+  public id: string;
   public type: ShapeType;
   public mesh: THREE.Mesh;
 
-  constructor(type: ShapeType, mesh: THREE.Mesh) {
+  constructor(id: string, type: ShapeType, mesh: THREE.Mesh) {
+    this.id = id;
     this.type = type;
     this.mesh = mesh;
   }

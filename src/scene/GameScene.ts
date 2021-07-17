@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { Beater, Shape, ShapeType } from '../common/types/Shapes';
+import { RandomId } from '../utils/RandomId';
 import { GameUtils } from './GameUtils';
 
 enum GameSceneStates {
@@ -19,6 +20,7 @@ export class GameScene {
   private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
   private selectedShape?: Shape;
+  private selectedShapeOutline?: THREE.LineSegments;
 
   constructor() {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
@@ -60,7 +62,7 @@ export class GameScene {
     let shape: Shape;
     switch (event.shapeType) {
       case ShapeType.BEATER:
-        shape = new Beater(event.shapeType, GameUtils.createBeaterShape());
+        shape = new Beater(RandomId.createId(), event.shapeType, GameUtils.createBeaterShape());
         break;
       default:
         return;
@@ -148,7 +150,22 @@ export class GameScene {
   }
 
   private selectShape(shape: Shape) {
+    // Ensure we didn't re-select same shape
+    if (shape.id === this.selectedShape?.id) {
+      return;
+    }
+
+    this.deselectShape();
+
     this.selectedShape = shape;
+
+    // Outline the shape
+    const edges = new THREE.EdgesGeometry(shape.mesh.geometry);
+    const outline = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xff0000 }));
+    outline.position.set(shape.mesh.position.x, shape.mesh.position.y, 0);
+    this.selectedShapeOutline = outline;
+    this.scene.add(outline);
+
     eventManager.fire({ e: EventType.SELECT_SHAPE, shape });
   }
 
@@ -158,6 +175,8 @@ export class GameScene {
 
   private deselectShape() {
     if (this.selectedShape) {
+      this.scene.remove(this.selectedShapeOutline);
+      this.selectedShapeOutline = undefined;
       this.selectedShape = undefined;
       eventManager.fire({ e: EventType.DESELECT_SHAPE });
     }
