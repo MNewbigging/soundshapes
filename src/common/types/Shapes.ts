@@ -8,15 +8,27 @@ export enum ShapeType {
   BEATER = 'beater',
 }
 
-export abstract class Shape {
+export class Shape {
   public id: string;
   public type: ShapeType;
-  public mesh: THREE.Mesh;
+  @observable public mesh: THREE.Mesh;
+
+  @observable public posX = 0;
+  @observable public posY = 0;
 
   constructor(id: string, type: ShapeType, mesh: THREE.Mesh) {
     this.id = id;
     this.type = type;
     this.mesh = mesh;
+
+    this.posX = mesh.position.x;
+    this.posY = mesh.position.y;
+  }
+
+  @action public setPosition(pos: THREE.Vector3) {
+    this.mesh.position.set(pos.x, pos.y, 0);
+    this.posX = pos.x;
+    this.posY = pos.y;
   }
 }
 

@@ -25,6 +25,8 @@ export class GameScene {
   constructor() {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
+    eventManager.registerEventListener(EventType.REPOSITION_SHAPE, this.onChangePosition);
+
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
     this.setupSceneBasics();
@@ -135,7 +137,7 @@ export class GameScene {
     }
 
     // Place in scene, create bounding box
-    this.mouseShape.mesh.position.set(this.mousePos.x, this.mousePos.y, 0);
+    this.mouseShape.setPosition(this.mousePos);
     this.mouseShape.mesh.geometry.computeBoundingBox();
 
     // Add mouse object to objects map
@@ -181,6 +183,20 @@ export class GameScene {
       eventManager.fire({ e: EventType.DESELECT_SHAPE });
     }
   }
+
+  private readonly onChangePosition = (event: GameEvent) => {
+    if (event.e !== EventType.REPOSITION_SHAPE || !this.selectedShape) {
+      return;
+    }
+    const newPos = event.newPos;
+    // On receiving a position change event, check new pos is ok to move to
+
+    // Then move the selected shape to its new position
+    this.selectedShape.setPosition(newPos);
+
+    // Adjust selected shape outline too
+    this.selectedShapeOutline.position.set(newPos.x, newPos.y, 0);
+  };
 
   // ########### GAME LOOP / UPDATE ###########
 

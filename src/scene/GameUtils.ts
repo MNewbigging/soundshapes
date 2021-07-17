@@ -8,6 +8,7 @@ export class GameUtils {
         return shape;
       }
     }
+
     return undefined;
   }
 

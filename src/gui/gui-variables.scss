@@ -45,6 +45,10 @@ $drawerWidth: 200px;
     height: $buttonSize;
     transition: transform 0.2s ease-out;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     .label {
       height: 30px;
       margin-right: 5px;
@@ -54,6 +58,15 @@ $drawerWidth: 200px;
 
     .input {
       height: 30px;
+      margin-right: 5px;
+    }
+
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      margin: 0;
     }
   }
 }
