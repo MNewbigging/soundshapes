@@ -19,7 +19,16 @@ export class DirectionEditor extends React.Component<Props> {
         <div className={'ui-button'}>D</div>
         <div className={'drawer direction-drawer'}>
           <div className={'label'}>Dir:</div>
-          <input className={'input'} type={'range'} min={'0'} max={'360'} />
+          <input
+            className={'input'}
+            type={'range'}
+            min={'0'}
+            max={'360'}
+            value={beater.rotation}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              beater.setRotation(parseInt(e.target.value, 10))
+            }
+          />
         </div>
       </div>
     );

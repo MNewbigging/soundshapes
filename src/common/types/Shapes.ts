@@ -80,7 +80,7 @@ export class Beater extends Shape {
     const endPoint = new THREE.Vector2(this.mesh.position.x, this.mesh.position.y).add(
       this.defaultDirection
     );
-    const rads = this.rotation * (Math.PI / 180);
+    const rads = -this.rotation * (Math.PI / 180);
     endPoint.rotateAround(new THREE.Vector2(this.mesh.position.x, this.mesh.position.y), rads);
 
     positions[3] = endPoint.x;
@@ -104,5 +104,10 @@ export class Beater extends Shape {
 
   @action public setSpeed(speed: number) {
     this.speed = speed;
+  }
+
+  @action public setRotation(rot: number) {
+    this.rotation = rot;
+    this.updateDirectionLine();
   }
 }
