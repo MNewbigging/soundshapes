@@ -19,7 +19,7 @@ export class ShapesToolbar extends React.Component<Props> {
 
     return (
       <div className={'shapes-toolbar ' + guiState.guiVis}>
-        <ShapeButton shape={ShapeType.BEATER} onClick={() => guiState.addBeater()} />
+        <ShapeButton shape={ShapeType.BEATER} onClick={() => guiState.addShape(ShapeType.BEATER)} />
       </div>
     );
   }

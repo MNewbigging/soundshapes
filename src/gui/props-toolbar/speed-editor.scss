@@ -1,0 +1,13 @@
+@import '../gui-variables.scss';
+
+.speed-editor {
+  .speed-drawer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .input {
+      width: 50px;
+    }
+  }
+}

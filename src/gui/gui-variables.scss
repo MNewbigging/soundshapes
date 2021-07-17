@@ -5,7 +5,55 @@ $buttonSize: 50px;
 $buttonBackgroundColor: gray;
 $buttonTextColor: white;
 
+$drawerWidth: 200px;
+
 .icon {
   width: 30px;
   height: 30px;
+}
+
+.ui-button {
+  user-select: none;
+  width: $buttonSize;
+  height: $buttonSize;
+  background-color: $buttonBackgroundColor;
+  color: $buttonTextColor;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+// The drawer parent contains the slider div
+.drawer-parent {
+  position: relative;
+  display: flex;
+
+  &:hover {
+    .drawer {
+      // Open the drawer
+      transform: translateX(-$drawerWidth);
+    }
+  }
+
+  .drawer {
+    position: absolute;
+    border: 1px solid black;
+    border-right: none;
+    width: $drawerWidth;
+    height: $buttonSize;
+    transition: transform 0.2s ease-out;
+
+    .label {
+      height: 30px;
+      margin-right: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .input {
+      height: 30px;
+    }
+  }
 }

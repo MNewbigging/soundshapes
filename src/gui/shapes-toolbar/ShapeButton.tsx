@@ -16,7 +16,7 @@ export class ShapeButton extends React.Component<Props> {
     const shapeIcon = this.getShapeIcon();
 
     return (
-      <div className={'shape-button'} onClick={() => onClick()}>
+      <div className={'ui-button'} onClick={() => onClick()}>
         {shapeIcon}
       </div>
     );

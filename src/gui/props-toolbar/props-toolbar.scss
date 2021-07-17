@@ -6,9 +6,6 @@
   top: 50%;
   transform: translateY(-50%);
   transition: transform 0.2s ease-out;
-  width: 50px;
-  border: 1px solid black;
-  height: 100px;
 
   &.closed {
     transform: translate($toolbarDepth, -50%);

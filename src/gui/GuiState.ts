@@ -1,7 +1,8 @@
 import { action, observable } from 'mobx';
+
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
-import { ShapeType } from '../common/types/Shapes';
+import { Shape, ShapeType } from '../common/types/Shapes';
 
 export enum GuiVisibility {
   OPEN = 'open',
@@ -12,6 +13,7 @@ export class GuiState {
   @observable public guiVis = GuiVisibility.OPEN;
   @observable public propsVis = GuiVisibility.CLOSED;
   @observable public helpDialogOpen = false;
+  public selectedShape?: Shape;
 
   constructor() {
     hotKeys.registerHotKeyListener('t', this.toggleGuiVisibility);
@@ -21,10 +23,10 @@ export class GuiState {
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
   }
 
-  public addBeater() {
+  public addShape(shapeType: ShapeType) {
     this.hideGui();
     this.mainGuiClick();
-    eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType: ShapeType.BEATER });
+    eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType });
   }
 
   @action public showHelp() {
@@ -69,6 +71,9 @@ export class GuiState {
 
   private readonly onSelectShape = (event: GameEvent) => {
     // Set the shape in state for toolbar to use
+    if (event.e === EventType.SELECT_SHAPE) {
+      this.selectedShape = event.shape;
+    }
 
     // Show the toolbar if currently hidden
     if (this.propsVis === GuiVisibility.CLOSED) {
@@ -78,6 +83,9 @@ export class GuiState {
 
   private readonly onDeselectShape = (_event: GameEvent) => {
     // Clear the shape in state
+    this.selectedShape = undefined;
+
+    // Close the props toolbar
     if (this.propsVis === GuiVisibility.OPEN) {
       this.propsVis = GuiVisibility.CLOSED;
     }

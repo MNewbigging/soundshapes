@@ -8,7 +8,7 @@ interface ButtonProps {
 
 export const HelpButton: React.FC<ButtonProps> = ({ onClick }) => {
   return (
-    <div className={'game-button help'} onClick={() => onClick()}>
+    <div className={'ui-button help'} onClick={() => onClick()}>
       <div>?</div>
     </div>
   );

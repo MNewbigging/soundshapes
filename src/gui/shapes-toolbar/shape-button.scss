@@ -1,15 +1,5 @@
 @import '../gui-variables.scss';
 
-.shape-button {
-  width: $buttonSize;
-  height: $buttonSize;
-  background-color: $buttonBackgroundColor;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .beater {
   border-radius: 50%;
   border: 1px solid $buttonTextColor;
