@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GameMode } from '../AppState';
 import { Shape, ShapeType } from './types/Shapes';
 
 export enum EventType {
@@ -8,6 +9,7 @@ export enum EventType {
   SELECT_SHAPE = 'select-shape',
   DESELECT_SHAPE = 'deselect-shape',
   REPOSITION_SHAPE = 'reposition-shape',
+  CHANGE_GAME_MODE = 'change-game-mode',
 }
 
 export type GameEvent =
@@ -16,7 +18,8 @@ export type GameEvent =
   | { e: EventType.CANCEL_ADD }
   | { e: EventType.SELECT_SHAPE; shape: Shape }
   | { e: EventType.DESELECT_SHAPE }
-  | { e: EventType.REPOSITION_SHAPE; newPos: THREE.Vector3 };
+  | { e: EventType.REPOSITION_SHAPE; newPos: THREE.Vector3 }
+  | { e: EventType.CHANGE_GAME_MODE; mode: GameMode };
 
 type EventListener = (gameEvent: GameEvent) => void;
 

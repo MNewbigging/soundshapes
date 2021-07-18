@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { screenLimits } from './GameUtils';
+import { ScreenLimits, screenLimits } from './GameUtils';
 
 type UpdateLoop = () => void;
 
@@ -8,6 +8,7 @@ export class GameScene {
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
   public renderer: THREE.WebGLRenderer;
+  public screenLimits: ScreenLimits = screenLimits;
 
   private updateLoop: UpdateLoop = () => {};
 

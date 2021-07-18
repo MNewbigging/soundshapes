@@ -8,6 +8,8 @@ import './game-toolbar.scss';
 
 interface Props {
   guiState: GuiState;
+  onPlay: () => void;
+  onStop: () => void;
 }
 
 @observer
@@ -16,7 +18,7 @@ export class GameToolbar extends React.Component<Props> {
     const { guiState } = this.props;
 
     return (
-      <div className={'game-toolbar ' + guiState.guiVis}>
+      <div className={'game-toolbar ' + guiState.gameVis}>
         {this.renderPlayButton()}
         {this.renderStopButton()}
         {this.renderHelpButton()}
@@ -35,16 +37,20 @@ export class GameToolbar extends React.Component<Props> {
   }
 
   private renderPlayButton() {
+    const { onPlay } = this.props;
+
     return (
-      <GuiButton onClick={() => console.log('play')}>
+      <GuiButton onClick={() => onPlay()}>
         <div>Play</div>
       </GuiButton>
     );
   }
 
   private renderStopButton() {
+    const { onStop } = this.props;
+
     return (
-      <GuiButton onClick={() => console.log('stop')}>
+      <GuiButton onClick={() => onStop()}>
         <div>Stop</div>
       </GuiButton>
     );

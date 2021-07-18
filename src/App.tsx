@@ -13,7 +13,7 @@ export class App extends React.PureComponent {
   public render() {
     return (
       <>
-        <GUI />
+        <GUI appState={this.appState} />
       </>
     );
   }

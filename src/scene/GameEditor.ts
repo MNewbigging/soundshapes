@@ -13,9 +13,9 @@ enum EditStates {
 }
 
 export class GameEditor {
+  public readonly shapes: Shape[] = [];
   private gameScene: GameScene;
-  private sceneState = EditStates.IDLE;
-  private readonly shapes: Shape[] = [];
+  private editState = EditStates.IDLE;
   private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
   private selectedShape?: Shape;
@@ -24,8 +24,6 @@ export class GameEditor {
   constructor(gameScene: GameScene) {
     this.gameScene = gameScene;
 
-    this.gameScene.renderer.domElement.onclick = this.onClickCanvas;
-
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     eventManager.registerEventListener(EventType.REPOSITION_SHAPE, this.onChangePosition);
@@ -33,9 +31,19 @@ export class GameEditor {
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
   }
 
+  public activate() {
+    // Add listeners we need while editing
+    this.addListeners();
+  }
+
+  public deactivate() {
+    // Remove listeners we don't need while editing
+    this.removeListeners();
+  }
+
   public update = () => {
     // If adding an object, update position of the mouse element
-    if (this.sceneState === EditStates.ADDING_SHAPE) {
+    if (this.editState === EditStates.ADDING_SHAPE) {
       if (this.mouseShape) {
         // Do this 'manually' (not in shape class) to avoid computing bounding box each tick
         this.mouseShape.mesh.position.set(this.mousePos.x, this.mousePos.y, 0);
@@ -43,9 +51,17 @@ export class GameEditor {
     }
   };
 
+  private addListeners() {
+    this.gameScene.renderer.domElement.onclick = this.onClickCanvas;
+  }
+
+  private removeListeners() {
+    this.gameScene.renderer.domElement.onclick = undefined;
+  }
+
   private readonly startAddShape = (event: GameEvent) => {
     // Can't add multiple at once
-    if (this.sceneState === EditStates.ADDING_SHAPE) {
+    if (this.editState === EditStates.ADDING_SHAPE) {
       return;
     }
     // Ensures event type is correct to proceed
@@ -69,11 +85,11 @@ export class GameEditor {
     // Add to scene, save ref to object, update scene state
     shape.addToScene(this.gameScene.scene);
     this.mouseShape = shape;
-    this.sceneState = EditStates.ADDING_SHAPE;
+    this.editState = EditStates.ADDING_SHAPE;
   };
 
   private readonly cancelAddShape = () => {
-    if (this.sceneState !== EditStates.ADDING_SHAPE) {
+    if (this.editState !== EditStates.ADDING_SHAPE) {
       return;
     }
 
@@ -89,14 +105,14 @@ export class GameEditor {
     // Lose ref to mouse object
     this.mouseShape = undefined;
     // Update scene state
-    this.sceneState = EditStates.IDLE;
+    this.editState = EditStates.IDLE;
     // Fire cancellation event
     eventManager.fire({ e: EventType.CANCEL_ADD });
   };
 
   private readonly onClickCanvas = (e: MouseEvent) => {
     // Determine action based on current state
-    switch (this.sceneState) {
+    switch (this.editState) {
       case EditStates.IDLE:
         // Set mouse position first
         this.setMousePosition(e);
@@ -147,7 +163,7 @@ export class GameEditor {
 
     // Remove reference to it, update state, fire addition event
     this.mouseShape = undefined;
-    this.sceneState = EditStates.IDLE;
+    this.editState = EditStates.IDLE;
     eventManager.fire({ e: EventType.ADD_SHAPE });
 
     // Stop listening to mouse movement

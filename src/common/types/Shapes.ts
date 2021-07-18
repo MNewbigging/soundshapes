@@ -9,7 +9,7 @@ export enum ShapeType {
   BEATER = 'beater',
 }
 
-export abstract class Shape {
+export class Shape {
   public id: string;
   public type: ShapeType;
   public mesh: THREE.Mesh;
@@ -36,7 +36,9 @@ export abstract class Shape {
     this.posY = pos.y;
   }
 
-  public abstract addToScene(scene: THREE.Scene): void;
+  public addToScene(scene: THREE.Scene): void {
+    scene.add(this.mesh);
+  }
 }
 
 export class Beater extends Shape {
@@ -62,10 +64,6 @@ export class Beater extends Shape {
     this.directionLine = new THREE.Line(geom, mat);
 
     this.mesh.attach(this.directionLine);
-  }
-
-  public addToScene(scene: THREE.Scene) {
-    scene.add(this.mesh);
   }
 
   public updateDirectionLine() {
