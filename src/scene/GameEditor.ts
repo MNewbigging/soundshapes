@@ -5,7 +5,7 @@ import { hotKeys } from '../common/HotKeys';
 import { Beater, Shape, ShapeType } from '../common/types/Shapes';
 import { RandomId } from '../utils/RandomId';
 import { GameScene } from './GameScene';
-import { GameUtils } from './GameUtils';
+import { GameUtils } from './EditorUtils';
 
 enum EditStates {
   IDLE = 'idle',
@@ -34,11 +34,27 @@ export class GameEditor {
   public activate() {
     // Add listeners we need while editing
     this.addListeners();
+
+    // Show beater directions
+    const beaters = this.shapes.filter((shape) => shape.type === ShapeType.BEATER) as Beater[];
+    if (beaters.length) {
+      beaters.forEach((beater) => {
+        beater.showDirectionLine(this.gameScene.scene);
+      });
+    }
   }
 
   public deactivate() {
-    // Remove listeners we don't need while editing
+    // Remove listeners we don't need while playing
     this.removeListeners();
+
+    // Remove beater direction lines
+    const beaters = this.shapes.filter((shape) => shape.type === ShapeType.BEATER) as Beater[];
+    if (beaters.length) {
+      beaters.forEach((beater) => {
+        beater.hideDirectionLine(this.gameScene.scene);
+      });
+    }
   }
 
   public update = () => {

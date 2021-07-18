@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 import { eventManager, EventType } from '../../common/EventManager';
 import { Shape } from '../../common/types/Shapes';
-import { screenLimits } from '../../scene/GameUtils';
+import { screenLimits } from '../../scene/EditorUtils';
 
 import './position-editor.scss';
 

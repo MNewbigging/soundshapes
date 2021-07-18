@@ -40,6 +40,9 @@ export class AppState {
 
     // TODO - check if any edits were made, can avoid re-making player
 
+    // Deactivate the editor
+    this.gameEditor.deactivate();
+
     // Make a new game player or reset it if no edits made
     this.gamePlayer = new GamePlayer(this.gameEditor.shapes, this.gameScene.screenLimits);
 
@@ -58,6 +61,9 @@ export class AppState {
 
     // Stop the player
     this.gamePlayer.stopPlayer();
+
+    // Activate editor
+    this.gameEditor.activate();
 
     // Swap update loop in scene to editor
     this.gameScene.setUpdateLoop(this.gameEditor.update);

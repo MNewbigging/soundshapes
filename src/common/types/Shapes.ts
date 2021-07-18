@@ -2,7 +2,6 @@
 
 import { action, observable } from 'mobx';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 
 export enum ShapeType {
   TRIANGLE = 'triangle',
@@ -28,6 +27,7 @@ export class Shape {
 
   @action public setPosition(pos: THREE.Vector3) {
     this.mesh.position.set(pos.x, pos.y, 0);
+    // TODO - this doesn't apply world matrix, so might not be necessary each pos change
     this.mesh.geometry.computeBoundingBox();
     this.mesh.updateMatrixWorld();
 
@@ -42,11 +42,18 @@ export class Shape {
 }
 
 export class Beater extends Shape {
+  // Observables are for updating GUI
   @observable public speed = 1;
   @observable public rotation = 0;
 
+  // Editor values
   private directionLine: THREE.Line;
+  // Points up by default
   private readonly defaultDirection = new THREE.Vector2(0, 10);
+  private directionLineEndPoint = new THREE.Vector2();
+
+  // Player values
+  public direction = new THREE.Vector2().copy(this.defaultDirection);
 
   constructor(id: string, type: ShapeType, mesh: THREE.Mesh) {
     super(id, type, mesh);
@@ -85,6 +92,9 @@ export class Beater extends Shape {
     positions[4] = endPoint.y;
 
     this.directionLine.geometry.getAttribute('position').needsUpdate = true;
+
+    // Save the endpoint position for creating directional vector in player
+    this.directionLineEndPoint = endPoint;
   }
 
   public showDirectionLine(scene: THREE.Scene) {
@@ -107,5 +117,20 @@ export class Beater extends Shape {
   @action public setRotation(rot: number) {
     this.rotation = rot;
     this.updateDirectionLine();
+  }
+
+  // Player functions
+
+  public setStartingDirection() {
+    // Get endpoint - position and normalise for facing direction
+    const face = new THREE.Vector2()
+      .copy(this.directionLineEndPoint)
+      .sub(new THREE.Vector2(this.mesh.position.x, this.mesh.position.y));
+    this.direction = face.normalize();
+  }
+
+  public resetPosition() {
+    this.mesh.position.x = this.posX;
+    this.mesh.position.y = this.posY;
   }
 }

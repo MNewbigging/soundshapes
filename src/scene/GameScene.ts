@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { ScreenLimits, screenLimits } from './GameUtils';
+import { ScreenLimits, screenLimits } from './EditorUtils';
 
 type UpdateLoop = () => void;
 
