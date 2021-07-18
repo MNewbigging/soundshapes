@@ -6,20 +6,13 @@ import './shape-button.scss';
 
 interface Props {
   shape: ShapeType;
-  onClick: () => void;
 }
 
 export class ShapeButton extends React.Component<Props> {
   public render() {
-    const { onClick } = this.props;
-
     const shapeIcon = this.getShapeIcon();
 
-    return (
-      <div className={'ui-button'} onClick={() => onClick()}>
-        {shapeIcon}
-      </div>
-    );
+    return <>{shapeIcon}</>;
   }
 
   private getShapeIcon() {

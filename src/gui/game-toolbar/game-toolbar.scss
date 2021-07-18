@@ -7,7 +7,14 @@
   transform: translateX(-50%);
   transition: transform 0.2s ease-out;
 
+  display: flex;
+
   &.closed {
     transform: translate(-50%, -$toolbarDepth);
+  }
+
+  .help {
+    font-weight: bolder;
+    font-size: x-large;
   }
 }
