@@ -12,7 +12,7 @@ export enum ShapeType {
 export abstract class Shape {
   public id: string;
   public type: ShapeType;
-  @observable public mesh: THREE.Mesh;
+  public mesh: THREE.Mesh;
 
   @observable public posX = 0;
   @observable public posY = 0;
