@@ -39,6 +39,9 @@ export class PropsToolbar extends React.Component<Props> {
           </div>
         );
 
+      case ShapeType.SQUARE:
+        return <PositionEditor shape={shape} />;
+
       default:
         return <></>;
     }
