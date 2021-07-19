@@ -46,6 +46,11 @@ export class Beater extends Shape {
   @observable public speed = 1;
   @observable public rotation = 0;
 
+  // Readonly for now
+  // TODO - to use this properly, would need to create Beater shape before the mesh, to pass
+  // into the mesh creation stage...
+  public readonly radius = 3;
+
   // Editor values
   private directionLine: THREE.Line;
   // Points up by default

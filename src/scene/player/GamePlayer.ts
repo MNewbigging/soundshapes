@@ -14,6 +14,8 @@ export class GamePlayer {
   private shapes: Shape[];
   private beaters: Beater[];
 
+  private readonly movementMultiplier = 0.2;
+
   constructor(shapes: Shape[], screenLimits: SceneLimits) {
     // Get shape data
     this.screenLimits = screenLimits;
@@ -39,8 +41,8 @@ export class GamePlayer {
   };
 
   private moveBeater(beater: Beater) {
-    beater.mesh.position.x += beater.direction.x * beater.speed;
-    beater.mesh.position.y += beater.direction.y * beater.speed;
+    beater.mesh.position.x += beater.direction.x * beater.speed * this.movementMultiplier;
+    beater.mesh.position.y += beater.direction.y * beater.speed * this.movementMultiplier;
   }
 
   private checkCollisions(beater: Beater) {

@@ -92,7 +92,7 @@ export class GameEditor {
     let shape: Shape;
     switch (event.shapeType) {
       case ShapeType.BEATER:
-        shape = new Beater(RandomId.createId(), event.shapeType, GameUtils.createBeaterShape());
+        shape = new Beater(RandomId.createId(), event.shapeType, GameUtils.createBeaterShape(3));
         break;
       default:
         return;

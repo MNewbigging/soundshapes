@@ -5,8 +5,8 @@ import { SceneLimits } from '../GameScene';
 
 export class PlayerUtils {
   public static checkBoundsCollisions(beater: Beater, screenLimits: SceneLimits) {
-    const xAbs = Math.abs(beater.mesh.position.x);
-    const yAbs = Math.abs(beater.mesh.position.y);
+    const xAbs = Math.abs(beater.mesh.position.x + beater.radius);
+    const yAbs = Math.abs(beater.mesh.position.y + beater.radius);
 
     // Horizontal bounds
     if (xAbs > screenLimits.xMax) {

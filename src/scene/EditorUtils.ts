@@ -36,11 +36,10 @@ export class GameUtils {
     return box.containsPoint(point);
   }
 
-  public static createBeaterShape() {
-    const beaterRadius = 3;
+  public static createBeaterShape(radius: number) {
     const beaterSegments = 20;
 
-    const geom = new THREE.CircleGeometry(beaterRadius, beaterSegments, 0, Math.PI * 2);
+    const geom = new THREE.CircleGeometry(radius, beaterSegments, 0, Math.PI * 2);
     const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     return new THREE.Mesh(geom, mat);
   }
