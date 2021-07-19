@@ -1,45 +1,7 @@
-// tslint:disable: max-classes-per-file
-
 import { action, observable } from 'mobx';
 import * as THREE from 'three';
-
-export enum ShapeType {
-  TRIANGLE = 'triangle',
-  BEATER = 'beater',
-}
-
-export class Shape {
-  public id: string;
-  public type: ShapeType;
-  public mesh: THREE.Mesh;
-
-  @observable public posX = 0;
-  @observable public posY = 0;
-
-  constructor(id: string, type: ShapeType, mesh: THREE.Mesh) {
-    this.id = id;
-    this.type = type;
-    this.mesh = mesh;
-
-    this.posX = mesh.position.x;
-    this.posY = mesh.position.y;
-  }
-
-  @action public setPosition(pos: THREE.Vector3) {
-    this.mesh.position.set(pos.x, pos.y, 0);
-    // TODO - this doesn't apply world matrix, so might not be necessary each pos change
-    this.mesh.geometry.computeBoundingBox();
-    this.mesh.updateMatrixWorld();
-
-    // For updating UI
-    this.posX = pos.x;
-    this.posY = pos.y;
-  }
-
-  public addToScene(scene: THREE.Scene): void {
-    scene.add(this.mesh);
-  }
-}
+import { EditorUtils } from '../../../scene/EditorUtils';
+import { Shape, ShapeType } from './Shape';
 
 export class Beater extends Shape {
   // Observables are for updating GUI
@@ -47,8 +9,6 @@ export class Beater extends Shape {
   @observable public rotation = 0;
 
   // Readonly for now
-  // TODO - to use this properly, would need to create Beater shape before the mesh, to pass
-  // into the mesh creation stage...
   public readonly radius = 3;
 
   // Editor values
@@ -60,8 +20,8 @@ export class Beater extends Shape {
   // Player values
   public direction = new THREE.Vector2().copy(this.defaultDirection);
 
-  constructor(id: string, type: ShapeType, mesh: THREE.Mesh) {
-    super(id, type, mesh);
+  constructor(id: string, type: ShapeType) {
+    super(id, type);
 
     // Create a line to show direction for this beater
     const mat = new THREE.LineBasicMaterial({ color: 0x00ff00 });
@@ -75,7 +35,13 @@ export class Beater extends Shape {
 
     this.directionLine = new THREE.Line(geom, mat);
 
-    this.mesh.attach(this.directionLine);
+    //this.mesh.attach(this.directionLine);
+  }
+
+  @action protected buildMesh() {
+    this.mesh = EditorUtils.createBeaterShape(this.radius);
+    this.posX = this.mesh.position.x;
+    this.posY = this.mesh.position.y;
   }
 
   public updateDirectionLine() {

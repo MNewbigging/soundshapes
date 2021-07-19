@@ -3,7 +3,7 @@ import { GameMode } from '../AppState';
 
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
-import { Shape, ShapeType } from '../common/types/Shapes';
+import { Shape, ShapeType } from '../common/types/shapes/Shape';
 
 export enum GuiVisibility {
   OPEN = 'open',

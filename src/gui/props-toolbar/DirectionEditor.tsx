@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 
-import { Beater } from '../../common/types/Shapes';
+import { Beater } from '../../common/types/shapes/Beater';
 
 import './direction-editor.scss';
 

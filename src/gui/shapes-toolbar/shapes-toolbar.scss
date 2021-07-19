@@ -10,4 +10,13 @@
   &.closed {
     transform: translate(-$toolbarDepth, -50%);
   }
+
+  .beater {
+    border-radius: 50%;
+    border: 1px solid $buttonTextColor;
+  }
+
+  .square {
+    border: 1px solid $buttonTextColor;
+  }
 }

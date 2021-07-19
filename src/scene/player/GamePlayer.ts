@@ -1,6 +1,5 @@
-import Matter, { Bodies, Body, Composite, Engine, ICompositeDefinition, World } from 'matter-js';
-
-import { Beater, Shape, ShapeType } from '../../common/types/Shapes';
+import { Beater } from '../../common/types/shapes/Beater';
+import { Shape, ShapeType } from '../../common/types/shapes/Shape';
 import { SceneLimits } from '../GameScene';
 
 import { PlayerUtils } from './PlayerUtils';

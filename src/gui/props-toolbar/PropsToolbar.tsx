@@ -1,7 +1,8 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 
-import { Beater, Shape, ShapeType } from '../../common/types/Shapes';
+import { Beater } from '../../common/types/shapes/Beater';
+import { Shape, ShapeType } from '../../common/types/shapes/Shape';
 import { GuiState } from '../GuiState';
 import { DirectionEditor } from './DirectionEditor';
 import { PositionEditor } from './PositionEditor';

@@ -2,10 +2,11 @@ import * as THREE from 'three';
 
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
-import { Beater, Shape, ShapeType } from '../common/types/Shapes';
+import { Beater } from '../common/types/shapes/Beater';
+import { Shape, ShapeType } from '../common/types/shapes/Shape';
 import { RandomId } from '../utils/RandomId';
 import { GameScene } from './GameScene';
-import { GameUtils } from './EditorUtils';
+import { EditorUtils } from './EditorUtils';
 
 enum EditStates {
   IDLE = 'idle',
@@ -88,15 +89,8 @@ export class GameEditor {
     // Start tracking mouse
     window.addEventListener('mousemove', this.setMousePosition);
 
-    // Make the shape class for the given shape type
-    let shape: Shape;
-    switch (event.shapeType) {
-      case ShapeType.BEATER:
-        shape = new Beater(RandomId.createId(), event.shapeType, GameUtils.createBeaterShape(3));
-        break;
-      default:
-        return;
-    }
+    // Make the new shape
+    const shape = EditorUtils.createShape(RandomId.createId(), event.shapeType);
 
     // Add to scene, save ref to object, update scene state
     shape.addToScene(this.gameScene.scene);
@@ -134,7 +128,7 @@ export class GameEditor {
         this.setMousePosition(e);
 
         // Did user select a shape?
-        const clickedShape = GameUtils.clickedShape(this.shapes, this.mousePos);
+        const clickedShape = EditorUtils.clickedShape(this.shapes, this.mousePos);
         if (clickedShape) {
           this.selectShape(clickedShape);
         } else {
@@ -156,7 +150,7 @@ export class GameEditor {
     // Ensure this new shape doesn't intersect any others in the scene
     this.mouseShape.mesh.geometry.computeBoundingBox();
     for (const shape of this.shapes) {
-      const intersects = GameUtils.meshesIntersectAABB(this.mouseShape.mesh, shape.mesh);
+      const intersects = EditorUtils.meshesIntersectAABB(this.mouseShape.mesh, shape.mesh);
       if (intersects) {
         // TODO - should have some visual cue to say the placement didn't work
         console.log('cannot place on top of other shapes');
@@ -241,7 +235,7 @@ export class GameEditor {
 
     // Then, check for collisions - if any, move it back
     const others = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
-    const collides = GameUtils.shapeIntersectsOthers(this.selectedShape, others);
+    const collides = EditorUtils.shapeIntersectsOthers(this.selectedShape, others);
 
     if (collides) {
       this.selectedShape.setPosition(oldPos);

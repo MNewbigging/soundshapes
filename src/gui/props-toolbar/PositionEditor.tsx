@@ -3,7 +3,7 @@ import React from 'react';
 import * as THREE from 'three';
 
 import { eventManager, EventType } from '../../common/EventManager';
-import { Shape } from '../../common/types/Shapes';
+import { Shape } from '../../common/types/shapes/Shape';
 
 import './position-editor.scss';
 

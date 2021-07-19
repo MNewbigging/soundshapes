@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GameMode } from '../AppState';
-import { Shape, ShapeType } from './types/Shapes';
+import { Shape, ShapeType } from './types/shapes/Shape';
 
 export enum EventType {
   START_ADD_SHAPE = 'start-add-shape',

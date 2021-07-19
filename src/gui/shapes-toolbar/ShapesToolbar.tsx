@@ -2,10 +2,8 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import { GuiButton } from '../../common/components/GuiButton';
 
-import { ShapeType } from '../../common/types/Shapes';
+import { ShapeType } from '../../common/types/shapes/Shape';
 import { GuiState } from '../GuiState';
-
-import { ShapeButton } from './ShapeButton';
 
 import './shapes-toolbar.scss';
 
@@ -20,10 +18,29 @@ export class ShapesToolbar extends React.Component<Props> {
 
     return (
       <div className={'shapes-toolbar ' + guiState.shapesVis}>
-        <GuiButton onClick={() => guiState.addShape(ShapeType.BEATER)}>
-          <ShapeButton shape={ShapeType.BEATER} />
-        </GuiButton>
+        {this.renderBeaterButton()}
+        {this.renderSquareButton()}
       </div>
+    );
+  }
+
+  private renderBeaterButton() {
+    const { guiState } = this.props;
+
+    return (
+      <GuiButton onClick={() => guiState.addShape(ShapeType.BEATER)}>
+        <div className={'icon beater'}></div>
+      </GuiButton>
+    );
+  }
+
+  private renderSquareButton() {
+    const { guiState } = this.props;
+
+    return (
+      <GuiButton onClick={() => guiState.addShape(ShapeType.SQUARE)}>
+        <div className={'icon square'}></div>
+      </GuiButton>
     );
   }
 }

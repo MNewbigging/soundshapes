@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
-import { Beater, Shape } from '../../common/types/Shapes';
+import { Beater } from '../../common/types/shapes/Beater';
+import { Shape } from '../../common/types/shapes/Shape';
 import { SceneLimits } from '../GameScene';
 
 export class PlayerUtils {
@@ -163,71 +164,3 @@ export class PlayerUtils {
     return others[closestIdx];
   }
 }
-
-/* Matterjs test code:
-// Setup physics engine
-    this.engine = Engine.create();
-
-    // Disable gravity
-    this.engine.gravity.y = 0;
-
-    // Set bounds (is this even doing anything?!)
-    this.engine.world.bounds = {
-      min: { x: -screenLimits.xMax, y: -screenLimits.yMax },
-      max: { x: screenLimits.xMax, y: screenLimits.yMax },
-    };
-
-    // Create walls for bounds
-    const wallDepth = 20;
-    const leftWall = Bodies.rectangle(-screenLimits.xMax, 0, wallDepth, screenLimits.yMax, {
-      isStatic: true,
-      frictionStatic: 0,
-    });
-
-    Composite.add(this.engine.world, leftWall);
-
-    // Add the beaters under a composite
-    const beaterBodies: Body[] = [];
-    this.beaters.forEach((beater) => {
-      // Create the body object
-      const body = Bodies.circle(beater.posX, beater.posY, 3, {
-        friction: 0,
-        frictionAir: 0,
-        frictionStatic: 0,
-        inertia: 0,
-        restitution: 1.05,
-        label: 'beater',
-      });
-
-      // Set starting values
-      Body.setVelocity(body, {
-        x: beater.direction.x * beater.speed,
-        y: beater.direction.y * beater.speed,
-      });
-
-      beaterBodies.push(body);
-    });
-    // Add the beater comp to the world
-    this.beaterComp = Composite.create();
-    Composite.add(this.beaterComp, beaterBodies);
-    Composite.add(this.engine.world, this.beaterComp);
-    //this.beaterComp = Composite.add(this.engine.world, beaterComp);
-
-    console.log('beaterComp: ', this.beaterComp);
-
-    console.log('comps: ', this.engine.world.composites);
-
-    console.log('world', this.engine.world);
-
-    Update():
-
-     // Update physics engine
-    Engine.update(this.engine, 1000 / 60);
-
-    // Update positions of objects
-    this.beaterComp.bodies.forEach((body: Body, idx) => {
-      this.beaters[idx].mesh.position.x = body.position.x;
-      this.beaters[idx].mesh.position.y = body.position.y;
-    });
-
-*/
