@@ -168,7 +168,6 @@ export class PlayerUtils {
 
   public static checkShapeCollisions(beater: Beater, shapes: Shape[]) {
     // Determine which calculation to run based on shape type
-    // TODO - is this switch inefficient?
     shapes.forEach((shape) => shape.checkCollision(beater));
   }
 
@@ -177,35 +176,34 @@ export class PlayerUtils {
     const rectPos = new THREE.Vector2(square.mesh.position.x, square.mesh.position.y);
 
     if (this.isCircleInRectArea(rectPos, square.size, square.size, circlePos, beater.radius)) {
-      // Find the
-
       console.log('colliding');
 
-      // const halfSize = square.size * 0.5;
+      // Find nearest points on rect
+      const halfSize = square.size * 0.5;
 
-      // const rectLeft = rectPos.x - halfSize;
-      // const rectRight = rectPos.x + halfSize;
-      // const xNearest = Math.max(rectLeft, Math.min(circlePos.x, rectRight));
+      const rectLeft = rectPos.x - halfSize;
+      const rectRight = rectPos.x + halfSize;
+      const xNearest = Math.max(rectLeft, Math.min(circlePos.x, rectRight));
 
-      // const rectTop = rectPos.y - halfSize;
-      // const rectBot = rectPos.y + halfSize;
-      // const yNearest = Math.max(rectTop, Math.min(circlePos.y, rectBot));
+      const rectTop = rectPos.y + halfSize;
+      const rectBot = rectPos.y - halfSize;
+      const yNearest = Math.max(rectBot, Math.min(circlePos.y, rectTop));
 
-      // const dist = new THREE.Vector2(circlePos.x - xNearest, circlePos.y - yNearest);
-      // const dn = dist.normalize();
-      // const scalar = 2 * beater.direction.dot(dn);
-      // const scaled = new THREE.Vector2().copy(dn).multiplyScalar(scalar);
+      const dist = new THREE.Vector2(circlePos.x - xNearest, circlePos.y - yNearest);
+      const dn = dist.normalize();
+      const scalar = 2 * beater.direction.dot(dn);
+      const scaled = new THREE.Vector2().copy(dn).multiplyScalar(scalar);
 
-      // beater.direction.x -= scaled.x;
-      // beater.direction.y -= scaled.y;
+      beater.direction.x -= scaled.x;
+      beater.direction.y -= scaled.y;
 
-      // // Move out of collision area
+      // Move out of collision area
+      // TODO - works too well - moves too far!
       // const penDepth = beater.radius - dist.length();
       // const penVec = dn.multiplyScalar(penDepth);
-      // const newPos = new THREE.Vector2().copy(circlePos).sub(penVec);
 
-      // beater.mesh.position.x = newPos.x;
-      // beater.mesh.position.y = newPos.y;
+      // beater.mesh.position.x += penVec.x;
+      // beater.mesh.position.y += penVec.y;
     }
   }
 
@@ -236,30 +234,5 @@ export class PlayerUtils {
       (dx - halfWidth) * (dx - halfWidth) + (dy - halfHeight) * (dy - halfHeight);
 
     return cornerDistSq <= cR * cR;
-  }
-
-  public static getClosestPointOnRect(
-    rPos: THREE.Vector2,
-    rW: number,
-    rH: number,
-    cPos: THREE.Vector2
-  ) {
-    let xClosest;
-    const rLeftPos = rPos.x - rW * 0.5;
-    const rRightPos = rPos.x + rW * 0.5;
-
-    // Check if already within bounds
-    if (cPos.x > rLeftPos && cPos.x < rRightPos) {
-      xClosest = cPos.x;
-    } else {
-      // Not already within bounds, find closest x
-      let dl = Math.abs(rLeftPos - cPos.x);
-      let dr = Math.abs(rRightPos - cPos.x);
-      xClosest = Math.min(dl, dr) === dl ? rLeftPos : rRightPos;
-    }
-
-    let yClosest;
-    const rTopPos = rPos.y - rH * 0.5;
-    const rBotPos = rPos.y + rH * 0.5;
   }
 }
