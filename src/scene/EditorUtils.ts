@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Beater } from '../common/types/shapes/Beater';
 import { Shape, ShapeType } from '../common/types/shapes/Shape';
+import { Square } from '../common/types/shapes/Square';
+import { SceneLimits } from './GameScene';
 
 export class EditorUtils {
   public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
@@ -11,6 +13,12 @@ export class EditorUtils {
     }
 
     return undefined;
+  }
+
+  public static meshContainsPoint(mesh: THREE.Mesh, point: THREE.Vector3) {
+    const box = new THREE.Box3().copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+
+    return box.containsPoint(point);
   }
 
   public static shapeIntersectsOthers(shape: Shape, others: Shape[]): boolean {
@@ -31,10 +39,22 @@ export class EditorUtils {
     return boxA.intersectsBox(boxB);
   }
 
-  public static meshContainsPoint(mesh: THREE.Mesh, point: THREE.Vector3) {
-    const box = new THREE.Box3().copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+  public static meshOutOfBounds(mesh: THREE.Mesh, bounds: SceneLimits) {
+    mesh.geometry.computeBoundingBox();
+    const bb = new THREE.Box3().copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
 
-    return box.containsPoint(point);
+    // Horizontal
+    if (Math.abs(bb.min.x) > bounds.xMax || Math.abs(bb.max.x) > bounds.xMax) {
+      // out of bounds on x
+      return true;
+    }
+    // Vertical
+    if (Math.abs(bb.min.y) > bounds.yMax || Math.abs(bb.max.y) > bounds.yMax) {
+      // out of bounds on y
+      return true;
+    }
+
+    return false;
   }
 
   public static createShape(id: string, shapeType: ShapeType) {
@@ -42,12 +62,16 @@ export class EditorUtils {
     switch (shapeType) {
       case ShapeType.BEATER:
         shape = new Beater(id, shapeType);
+        break;
+      case ShapeType.SQUARE:
+        shape = new Square(id, shapeType);
+        break;
     }
 
     return shape;
   }
 
-  public static createBeaterShape(radius: number) {
+  public static createBeaterMesh(radius: number) {
     const beaterSegments = 20;
 
     const geom = new THREE.CircleGeometry(radius, beaterSegments, 0, Math.PI * 2);
@@ -55,7 +79,9 @@ export class EditorUtils {
     return new THREE.Mesh(geom, mat);
   }
 
-  public static createSquareShape(size: number) {
-    //
+  public static createSquareMesh(size: number) {
+    const geom = new THREE.PlaneGeometry(size, size);
+    const mat = new THREE.MeshBasicMaterial({ color: 0x1bbb7f });
+    return new THREE.Mesh(geom, mat);
   }
 }

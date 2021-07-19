@@ -147,6 +147,9 @@ export class GameEditor {
       return;
     }
 
+    // Set the new position
+    this.mouseShape.setPosition(this.mousePos);
+
     // Ensure this new shape doesn't intersect any others in the scene
     this.mouseShape.mesh.geometry.computeBoundingBox();
     for (const shape of this.shapes) {
@@ -158,8 +161,10 @@ export class GameEditor {
       }
     }
 
-    // Set the new position
-    this.mouseShape.setPosition(this.mousePos);
+    // Ensure it isn't out of bounds
+    if (EditorUtils.meshOutOfBounds(this.mouseShape.mesh, this.gameScene.sceneLimits)) {
+      return;
+    }
 
     // If a beater, show direction line now
     if (this.mouseShape.type === ShapeType.BEATER) {

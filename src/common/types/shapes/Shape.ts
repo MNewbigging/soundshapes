@@ -20,6 +20,8 @@ export abstract class Shape {
 
     // Build own mesh
     this.buildMesh();
+    this.posX = this.mesh.position.x;
+    this.posY = this.mesh.position.y;
   }
 
   @action public setPosition(pos: THREE.Vector3) {

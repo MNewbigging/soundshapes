@@ -3,13 +3,15 @@ import * as THREE from 'three';
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { Shape, ShapeType } from './Shape';
 
+const defaultBeaterRadius = 3;
+
 export class Beater extends Shape {
   // Observables are for updating GUI
   @observable public speed = 1;
   @observable public rotation = 0;
 
   // Readonly for now
-  public readonly radius = 3;
+  public readonly radius = defaultBeaterRadius;
 
   // Editor values
   private directionLine: THREE.Line;
@@ -38,10 +40,8 @@ export class Beater extends Shape {
     //this.mesh.attach(this.directionLine);
   }
 
-  @action protected buildMesh() {
-    this.mesh = EditorUtils.createBeaterShape(this.radius);
-    this.posX = this.mesh.position.x;
-    this.posY = this.mesh.position.y;
+  protected buildMesh() {
+    this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius);
   }
 
   public updateDirectionLine() {
