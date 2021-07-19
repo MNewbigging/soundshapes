@@ -1,5 +1,6 @@
 import { action, observable } from 'mobx';
 import * as THREE from 'three';
+import { Beater } from './Beater';
 
 export enum ShapeType {
   BEATER = 'beater',
@@ -38,6 +39,8 @@ export abstract class Shape {
   public addToScene(scene: THREE.Scene): void {
     scene.add(this.mesh);
   }
+
+  public abstract checkCollision(beater: Beater): void;
 
   protected abstract buildMesh(): void;
 }

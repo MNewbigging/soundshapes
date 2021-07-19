@@ -40,6 +40,10 @@ export class Beater extends Shape {
     //this.mesh.attach(this.directionLine);
   }
 
+  public checkCollision(_beater: Beater) {
+    // Leaving this empty for now
+  }
+
   protected buildMesh() {
     this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius);
   }

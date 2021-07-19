@@ -8,18 +8,16 @@ import { PlayerUtils } from './PlayerUtils';
  * The GamePlayer takes over when playing the game. It deals with the physics, and sends
  * collision events for the sound system to pick up.
  */
+export const movementMultiplier = 0.2;
+
 export class GamePlayer {
   private screenLimits: SceneLimits;
   private shapes: Shape[];
   private beaters: Beater[];
 
-  private readonly movementMultiplier = 0.2;
-
   constructor(shapes: Shape[], screenLimits: SceneLimits) {
-    // Get shape data
     this.screenLimits = screenLimits;
     this.shapes = shapes.filter((shape) => shape.type !== ShapeType.BEATER);
-
     this.beaters = shapes.filter((shape) => shape.type === ShapeType.BEATER) as Beater[];
     if (this.beaters.length) {
       this.beaters.forEach((beater) => beater.setStartingDirection());
@@ -40,16 +38,21 @@ export class GamePlayer {
   };
 
   private moveBeater(beater: Beater) {
-    beater.mesh.position.x += beater.direction.x * beater.speed * this.movementMultiplier;
-    beater.mesh.position.y += beater.direction.y * beater.speed * this.movementMultiplier;
+    beater.mesh.position.x += beater.direction.x * beater.speed * movementMultiplier;
+    beater.mesh.position.y += beater.direction.y * beater.speed * movementMultiplier;
   }
 
   private checkCollisions(beater: Beater) {
     // Check against screen limits
     PlayerUtils.checkBoundsCollisions(beater, this.screenLimits);
+    // TODO - remove these length checks; game shouldn't run without either
     // Check against other beaters
     if (this.beaters.length > 1) {
       PlayerUtils.checkBeaterToBeaterCollision(beater, this.beaters);
+    }
+    // Check against shapes
+    if (this.shapes.length) {
+      PlayerUtils.checkShapeCollisions(beater, this.shapes);
     }
   }
 }
