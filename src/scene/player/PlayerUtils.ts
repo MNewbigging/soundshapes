@@ -5,19 +5,45 @@ import { SceneLimits } from '../GameScene';
 
 export class PlayerUtils {
   public static checkBoundsCollisions(beater: Beater, screenLimits: SceneLimits) {
-    const xAbs = Math.abs(beater.mesh.position.x + beater.radius);
-    const yAbs = Math.abs(beater.mesh.position.y + beater.radius);
+    const bx = beater.mesh.position.x;
+    const by = beater.mesh.position.y;
+    const r = beater.radius;
 
     // Horizontal bounds
-    if (xAbs > screenLimits.xMax) {
+    if (bx - r < -screenLimits.xMax) {
       // Flip x direction
       beater.direction.x *= -1;
+
+      // Find distance crossed over and displace beater
+      const dist = bx - r - -screenLimits.xMax;
+      beater.mesh.position.x += Math.abs(dist);
+      //
+    } else if (bx + r > screenLimits.xMax) {
+      // Flip x direction
+      beater.direction.x *= -1;
+
+      // Find distance crossed over and displace beater
+      const dist = bx + r - screenLimits.xMax;
+      beater.mesh.position.x -= Math.abs(dist);
     }
 
     // Vertical bounds
-    if (yAbs > screenLimits.yMax) {
+    if (by - r < -screenLimits.yMax) {
       // Flip y direction
       beater.direction.y *= -1;
+
+      // Find distance crossed over and displace beater
+      const dist = by - r - -screenLimits.yMax;
+      beater.mesh.position.y += Math.abs(dist);
+
+      // Find
+    } else if (by + r > screenLimits.yMax) {
+      // Flip y direction
+      beater.direction.y *= -1;
+
+      // Find distance crossed over and displace beater
+      const dist = by + r - screenLimits.yMax;
+      beater.mesh.position.y -= Math.abs(dist);
     }
   }
 
@@ -55,7 +81,7 @@ export class PlayerUtils {
 
     // Check if the distance is less than the sum of both beater's radii
     const radii = 6; // TODO - import this from somewhere
-    const intersects = Math.abs(distanceSq) <= radii * radii;
+    const intersects = Math.abs(distanceSq) < radii * radii;
 
     if (!intersects) {
       return;
