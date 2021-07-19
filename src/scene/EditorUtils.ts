@@ -1,18 +1,6 @@
 import * as THREE from 'three';
 import { Shape } from '../common/types/Shapes';
 
-export interface ScreenLimits {
-  fov: number;
-  xMax: number;
-  yMax: number;
-}
-
-export const screenLimits: ScreenLimits = {
-  fov: 60,
-  xMax: 105.5,
-  yMax: 54.5,
-};
-
 export class GameUtils {
   public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
     for (const shape of shapes) {

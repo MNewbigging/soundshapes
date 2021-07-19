@@ -227,6 +227,15 @@ export class GameEditor {
     const newPos = event.newPos;
     const oldPos = new THREE.Vector3().copy(this.selectedShape.mesh.position);
 
+    // Is the new position out of screen bounds?
+    if (Math.abs(newPos.x) > this.gameScene.sceneLimits.xMax) {
+      console.log('out of bounds!');
+      return;
+    } else if (Math.abs(newPos.y) > this.gameScene.sceneLimits.yMax) {
+      console.log('out of bounds');
+      return;
+    }
+
     // First, move shape to new position
     this.selectedShape.setPosition(newPos);
 

@@ -1,7 +1,8 @@
 import Matter, { Bodies, Body, Composite, Engine, ICompositeDefinition, World } from 'matter-js';
 
 import { Beater, Shape, ShapeType } from '../../common/types/Shapes';
-import { ScreenLimits } from '../EditorUtils';
+import { SceneLimits } from '../GameScene';
+
 import { PlayerUtils } from './PlayerUtils';
 
 /**
@@ -9,11 +10,11 @@ import { PlayerUtils } from './PlayerUtils';
  * collision events for the sound system to pick up.
  */
 export class GamePlayer {
-  private screenLimits: ScreenLimits;
+  private screenLimits: SceneLimits;
   private shapes: Shape[];
   private beaters: Beater[];
 
-  constructor(shapes: Shape[], screenLimits: ScreenLimits) {
+  constructor(shapes: Shape[], screenLimits: SceneLimits) {
     // Get shape data
     this.screenLimits = screenLimits;
     this.shapes = shapes.filter((shape) => shape.type !== ShapeType.BEATER);

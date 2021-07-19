@@ -4,7 +4,6 @@ import * as THREE from 'three';
 
 import { eventManager, EventType } from '../../common/EventManager';
 import { Shape } from '../../common/types/Shapes';
-import { screenLimits } from '../../scene/EditorUtils';
 
 import './position-editor.scss';
 
@@ -39,11 +38,6 @@ export class PositionEditor extends React.Component<Props> {
       return;
     }
 
-    // When using screen limits (we are for prototype builds), validate input against limit
-    if (value > Math.abs(screenLimits.xMax)) {
-      return;
-    }
-
     const newPos = new THREE.Vector3(value, shape.mesh.position.y, 0);
 
     eventManager.fire({ e: EventType.REPOSITION_SHAPE, newPos });
@@ -54,11 +48,6 @@ export class PositionEditor extends React.Component<Props> {
 
     const value = parseFloat(e.target.value);
     if (Number.isNaN(value)) {
-      return;
-    }
-
-    // When using screen limits (we are for prototype builds), validate input against limit
-    if (value > Math.abs(screenLimits.yMax)) {
       return;
     }
 

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
 import { Beater, Shape } from '../../common/types/Shapes';
-import { ScreenLimits } from '../EditorUtils';
+import { SceneLimits } from '../GameScene';
 
 export class PlayerUtils {
-  public static checkBoundsCollisions(beater: Beater, screenLimits: ScreenLimits) {
+  public static checkBoundsCollisions(beater: Beater, screenLimits: SceneLimits) {
     const xAbs = Math.abs(beater.mesh.position.x);
     const yAbs = Math.abs(beater.mesh.position.y);
 

@@ -44,7 +44,7 @@ export class AppState {
     this.gameEditor.deactivate();
 
     // Make a new game player or reset it if no edits made
-    this.gamePlayer = new GamePlayer(this.gameEditor.shapes, this.gameScene.screenLimits);
+    this.gamePlayer = new GamePlayer(this.gameEditor.shapes, this.gameScene.sceneLimits);
 
     // Swap update loop in scene to player
     this.gameScene.setUpdateLoop(this.gamePlayer.update);
