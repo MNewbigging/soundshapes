@@ -171,11 +171,18 @@ export class PlayerUtils {
     shapes.forEach((shape) => shape.checkCollision(beater));
   }
 
-  public static circleToSquareCollision(beater: Beater, square: Square) {
+  public static circleToSquareCollision(beater: Beater, square: Square): boolean {
     const circlePos = new THREE.Vector2(beater.mesh.position.x, beater.mesh.position.y);
     const rectPos = new THREE.Vector2(square.mesh.position.x, square.mesh.position.y);
 
-    if (this.isCircleInRectArea(rectPos, square.size, square.size, circlePos, beater.radius)) {
+    const collides = this.isCircleInRectArea(
+      rectPos,
+      square.size,
+      square.size,
+      circlePos,
+      beater.radius
+    );
+    if (collides) {
       console.log('colliding');
 
       // Find nearest points on rect
@@ -205,6 +212,8 @@ export class PlayerUtils {
       // beater.mesh.position.x += penVec.x;
       // beater.mesh.position.y += penVec.y;
     }
+
+    return collides;
   }
 
   public static isCircleInRectArea(

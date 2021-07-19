@@ -43,4 +43,15 @@ export abstract class Shape {
   public abstract checkCollision(beater: Beater): void;
 
   protected abstract buildMesh(): void;
+
+  protected playSound() {
+    // This gets called when this shape is struck by a beater
+    // We can pass the beater as a parm later, to get its effects (when we implement effects)
+    // Playing sounds:
+    // You can check what kind of shape this is with the type propery, so you could
+    // pass this into your own function to decide what kind of sound to play
+    // Or, better, if you're making your own class hierarchy, you can add the correct
+    // sound type as a new property to the shape classes (not this one). E.g, go to
+    // Square.ts and add your sound property there.
+  }
 }
