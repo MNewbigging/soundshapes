@@ -1,11 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap');
+
 $toolbarDepth: 50px;
 $dialogDepth: 100px;
 
 $buttonSize: 50px;
 $buttonBackgroundColor: gray;
+$buttonHoverColor: rgb(153, 152, 152);
 $buttonTextColor: white;
 
 $drawerWidth: 200px;
+$drawerBackgroundColor: rgb(153, 152, 152);
+$drawerBorderColor: gray;
+
+* {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 400;
+}
 
 .icon {
   width: 30px;
@@ -18,11 +28,17 @@ $drawerWidth: 200px;
   height: $buttonSize;
   background-color: $buttonBackgroundColor;
   color: $buttonTextColor;
+  transition: background-color 0.3s ease-out;
 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 50;
+
+  &:hover {
+    background-color: $buttonHoverColor;
+    cursor: pointer;
+  }
 }
 
 // The drawer parent contains the slider div
@@ -39,8 +55,10 @@ $drawerWidth: 200px;
 
   .drawer {
     position: absolute;
-    border: 1px solid black;
+    border: 1px solid $drawerBorderColor;
     border-right: none;
+    background-color: $drawerBackgroundColor;
+    color: $buttonTextColor;
     width: $drawerWidth;
     height: $buttonSize;
     transition: transform 0.2s ease-out;
