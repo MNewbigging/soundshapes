@@ -86,8 +86,11 @@ export class GameEditor {
       return;
     }
 
+    // Set mouse position via given event (avoids jumping from last known mouse pos)
+    this.setMousePosition(event.mouseEvent.clientX, event.mouseEvent.clientY);
+
     // Start tracking mouse
-    window.addEventListener('mousemove', this.setMousePosition);
+    window.addEventListener('mousemove', this.onMouseMove);
 
     // Make the new shape
     const shape = EditorUtils.createShape(RandomId.createId(), event.shapeType);
@@ -104,7 +107,7 @@ export class GameEditor {
     }
 
     // Stop listening to mouse movement
-    window.removeEventListener('mousemove', this.setMousePosition);
+    window.removeEventListener('mousemove', this.onMouseMove);
 
     if (!this.mouseShape) {
       return;
@@ -125,7 +128,7 @@ export class GameEditor {
     switch (this.editState) {
       case EditStates.IDLE:
         // Set mouse position first
-        this.setMousePosition(e);
+        this.onMouseMove(e);
 
         // Did user select a shape?
         const clickedShape = EditorUtils.clickedShape(this.shapes, this.mousePos);
@@ -182,7 +185,7 @@ export class GameEditor {
     eventManager.fire({ e: EventType.ADD_SHAPE });
 
     // Stop listening to mouse movement
-    window.removeEventListener('mousemove', this.setMousePosition);
+    window.removeEventListener('mousemove', this.onMouseMove);
   }
 
   private selectShape(shape: Shape) {
@@ -248,10 +251,25 @@ export class GameEditor {
     }
   };
 
-  private readonly setMousePosition = (e: MouseEvent) => {
+  private readonly onMouseMove = (e: MouseEvent) => {
     // Get mouse position relative to game canvas
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = -(e.clientY / window.innerHeight) * 2 + 1;
+    // const x = (e.clientX / window.innerWidth) * 2 - 1;
+    // const y = -(e.clientY / window.innerHeight) * 2 + 1;
+    // const vec = new THREE.Vector3(x, y, 0);
+    // vec.unproject(this.gameScene.camera);
+    // vec.sub(this.gameScene.camera.position).normalize();
+    // const dist = -this.gameScene.camera.position.z / vec.z;
+    // vec.multiplyScalar(dist);
+    // vec.z = 0;
+    // this.mousePos = vec;
+
+    this.setMousePosition(e.clientX, e.clientY);
+  };
+
+  private setMousePosition(mouseX: number, mouseY: number) {
+    // Get mouse position relative to game canvas
+    const x = (mouseX / window.innerWidth) * 2 - 1;
+    const y = -(mouseY / window.innerHeight) * 2 + 1;
     const vec = new THREE.Vector3(x, y, 0);
     vec.unproject(this.gameScene.camera);
     vec.sub(this.gameScene.camera.position).normalize();
@@ -259,5 +277,5 @@ export class GameEditor {
     vec.multiplyScalar(dist);
     vec.z = 0;
     this.mousePos = vec;
-  };
+  }
 }

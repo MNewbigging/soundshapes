@@ -1,3 +1,4 @@
+import React from 'react';
 import * as THREE from 'three';
 import { GameMode } from '../AppState';
 import { Shape, ShapeType } from './types/shapes/Shape';
@@ -13,7 +14,7 @@ export enum EventType {
 }
 
 export type GameEvent =
-  | { e: EventType.START_ADD_SHAPE; shapeType: ShapeType }
+  | { e: EventType.START_ADD_SHAPE; shapeType: ShapeType; mouseEvent: React.MouseEvent }
   | { e: EventType.ADD_SHAPE }
   | { e: EventType.CANCEL_ADD }
   | { e: EventType.SELECT_SHAPE; shape: Shape }

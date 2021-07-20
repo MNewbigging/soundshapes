@@ -1,4 +1,5 @@
 import { action, observable } from 'mobx';
+import React from 'react';
 import { GameMode } from '../AppState';
 
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
@@ -38,10 +39,10 @@ export class GuiState {
     this.helpDialogOpen = false;
   }
 
-  public addShape(shapeType: ShapeType) {
+  public addShape(shapeType: ShapeType, mouseEvent: React.MouseEvent) {
     // When adding a shape, hide all GUI first
     this.hideAllGui();
-    eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType });
+    eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType, mouseEvent });
   }
 
   private fireDeselectEvent() {
