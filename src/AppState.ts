@@ -30,7 +30,6 @@ export class AppState {
   }
 
   @action public playGame() {
-    console.log('playGame');
     if (this.gameMode === GameMode.PLAY) {
       return;
     }
@@ -51,7 +50,6 @@ export class AppState {
   }
 
   @action public stopGame() {
-    console.log('stopGame');
     if (this.gameMode === GameMode.EDIT || !this.gamePlayer) {
       return;
     }

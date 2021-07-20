@@ -56,7 +56,7 @@ export class Beater extends Shape {
   }
 
   protected buildMesh() {
-    this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius);
+    this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius, this.id);
   }
 
   protected playSound() {

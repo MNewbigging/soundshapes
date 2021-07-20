@@ -34,7 +34,7 @@ class EventManager {
   }
 
   public fire(event: GameEvent) {
-    console.log('firing event: ', event);
+    //console.log('firing event: ', event);
     const eventListeners = this.listeners.get(event.e) ?? [];
     if (eventListeners.length) {
       eventListeners.forEach((el) => el(event));

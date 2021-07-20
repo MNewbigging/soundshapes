@@ -9,7 +9,7 @@ export class Square extends Shape {
   public size = defaultSquareSize;
 
   protected buildMesh() {
-    this.mesh = EditorUtils.createSquareMesh(defaultSquareSize);
+    this.mesh = EditorUtils.createSquareMesh(defaultSquareSize, this.id);
   }
 
   protected playSound(beater: Beater) {

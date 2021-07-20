@@ -21,6 +21,21 @@ export class EditorUtils {
     return box.containsPoint(point);
   }
 
+  public static shapePositionValid(shape: Shape, sceneLimits: SceneLimits, otherShapes: Shape[]) {
+    // Check against bounds
+    if (EditorUtils.meshOutOfBounds(shape.mesh, sceneLimits)) {
+      return false;
+    }
+
+    // Check against other shapes
+    if (EditorUtils.shapeIntersectsOthers(shape, otherShapes)) {
+      return false;
+    }
+
+    // Position is valid
+    return true;
+  }
+
   public static shapeIntersectsOthers(shape: Shape, others: Shape[]): boolean {
     for (const other of others) {
       if (EditorUtils.meshesIntersectAABB(shape.mesh, other.mesh)) {
@@ -71,17 +86,23 @@ export class EditorUtils {
     return shape;
   }
 
-  public static createBeaterMesh(radius: number) {
+  public static createBeaterMesh(radius: number, id: string) {
     const beaterSegments = 20;
 
     const geom = new THREE.CircleGeometry(radius, beaterSegments, 0, Math.PI * 2);
     const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    return new THREE.Mesh(geom, mat);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.name = id;
+
+    return mesh;
   }
 
-  public static createSquareMesh(size: number) {
+  public static createSquareMesh(size: number, id: string) {
     const geom = new THREE.PlaneGeometry(size, size);
     const mat = new THREE.MeshBasicMaterial({ color: 0x1bbb7f });
-    return new THREE.Mesh(geom, mat);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.name = id;
+
+    return mesh;
   }
 }
