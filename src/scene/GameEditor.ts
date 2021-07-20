@@ -252,17 +252,6 @@ export class GameEditor {
   };
 
   private readonly onMouseMove = (e: MouseEvent) => {
-    // Get mouse position relative to game canvas
-    // const x = (e.clientX / window.innerWidth) * 2 - 1;
-    // const y = -(e.clientY / window.innerHeight) * 2 + 1;
-    // const vec = new THREE.Vector3(x, y, 0);
-    // vec.unproject(this.gameScene.camera);
-    // vec.sub(this.gameScene.camera.position).normalize();
-    // const dist = -this.gameScene.camera.position.z / vec.z;
-    // vec.multiplyScalar(dist);
-    // vec.z = 0;
-    // this.mousePos = vec;
-
     this.setMousePosition(e.clientX, e.clientY);
   };
 
