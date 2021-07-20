@@ -30,6 +30,7 @@ export class GameEditor {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     eventManager.registerEventListener(EventType.REPOSITION_SHAPE, this.onChangePosition);
+    eventManager.registerEventListener(EventType.SCALE_SHAPE, this.onChangeScale);
 
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
 
@@ -243,16 +244,40 @@ export class GameEditor {
     this.selectedShape.setPosition(newPos);
 
     // Then check that position is valid for that shape to be in
-    const others = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
     const valid = EditorUtils.shapePositionValid(
       this.selectedShape,
       this.gameScene.sceneLimits,
-      others
+      this.shapes
     );
 
     if (!valid) {
       console.log('invalid position!');
       this.selectedShape.setPosition(oldPos);
+    }
+  };
+
+  private readonly onChangeScale = (event: GameEvent) => {
+    if (event.e !== EventType.SCALE_SHAPE || !this.selectedShape) {
+      return;
+    }
+
+    const newScale = event.scale;
+    const oldScale = this.selectedShape.scale;
+
+    // Set to new scale
+    this.selectedShape.setScale(newScale);
+
+    // Check it is still in bounds/not colliding
+    const valid = EditorUtils.shapePositionValid(
+      this.selectedShape,
+      this.gameScene.sceneLimits,
+      this.shapes
+    );
+
+    // If invalid, revert scale
+    if (!valid) {
+      console.log('invalid scale');
+      this.selectedShape.setScale(oldScale);
     }
   };
 
@@ -315,11 +340,10 @@ export class GameEditor {
     this.dragControls.addEventListener('dragend', (e: THREE.Event) => {
       if (e.object && this.selectedShape) {
         // Check object's new position is valid
-        const others = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
         const valid = EditorUtils.shapePositionValid(
           this.selectedShape,
           this.gameScene.sceneLimits,
-          others
+          this.shapes
         );
         if (!valid && this.dragPrevPos) {
           // Revert to previous position

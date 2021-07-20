@@ -21,14 +21,15 @@ export class EditorUtils {
     return box.containsPoint(point);
   }
 
-  public static shapePositionValid(shape: Shape, sceneLimits: SceneLimits, otherShapes: Shape[]) {
+  public static shapePositionValid(shape: Shape, sceneLimits: SceneLimits, allShapes: Shape[]) {
     // Check against bounds
     if (EditorUtils.meshOutOfBounds(shape.mesh, sceneLimits)) {
       return false;
     }
 
     // Check against other shapes
-    if (EditorUtils.shapeIntersectsOthers(shape, otherShapes)) {
+    const others = allShapes.filter((s) => s.id !== shape.id);
+    if (EditorUtils.shapeIntersectsOthers(shape, others)) {
       return false;
     }
 

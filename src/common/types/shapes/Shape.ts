@@ -51,6 +51,18 @@ export abstract class Shape {
     this.posY = pos.y;
   }
 
+  @action public setScale(scale: number) {
+    this.scale = scale;
+
+    this.mesh.scale.x = scale;
+    this.mesh.scale.y = scale;
+
+    this.outline.scale.x = scale;
+    this.outline.scale.y = scale;
+
+    this.mesh.updateMatrixWorld();
+  }
+
   public addToScene(scene: THREE.Scene): void {
     scene.add(this.mesh);
   }

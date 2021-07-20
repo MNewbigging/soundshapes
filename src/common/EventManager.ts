@@ -10,6 +10,7 @@ export enum EventType {
   SELECT_SHAPE = 'select-shape',
   DESELECT_SHAPE = 'deselect-shape',
   REPOSITION_SHAPE = 'reposition-shape',
+  SCALE_SHAPE = 'scale-shape',
   CHANGE_GAME_MODE = 'change-game-mode',
 }
 
@@ -20,7 +21,8 @@ export type GameEvent =
   | { e: EventType.SELECT_SHAPE; shape: Shape }
   | { e: EventType.DESELECT_SHAPE }
   | { e: EventType.REPOSITION_SHAPE; newPos: THREE.Vector3 }
-  | { e: EventType.CHANGE_GAME_MODE; mode: GameMode };
+  | { e: EventType.CHANGE_GAME_MODE; mode: GameMode }
+  | { e: EventType.SCALE_SHAPE; scale: number };
 
 type EventListener = (gameEvent: GameEvent) => void;
 

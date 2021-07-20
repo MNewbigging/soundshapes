@@ -9,6 +9,7 @@ import { PositionEditor } from './PositionEditor';
 import { SpeedEditor } from './SpeedEditor';
 
 import './props-toolbar.scss';
+import { ScaleEditor } from './ScaleEditor';
 
 interface Props {
   guiState: GuiState;
@@ -40,7 +41,12 @@ export class PropsToolbar extends React.Component<Props> {
         );
 
       case ShapeType.SQUARE:
-        return <PositionEditor shape={shape} />;
+        return (
+          <div>
+            <PositionEditor shape={shape} />
+            <ScaleEditor shape={shape} />
+          </div>
+        );
 
       default:
         return <></>;

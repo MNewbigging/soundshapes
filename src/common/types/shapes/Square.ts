@@ -41,4 +41,9 @@ export class Square extends Shape {
       this.playSound(beater);
     }
   }
+
+  public setScale(scale: number) {
+    super.setScale(scale);
+    this.size *= scale;
+  }
 }
