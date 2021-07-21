@@ -31,6 +31,7 @@
     "react-split-pane": "^0.1.92",
     "save-dev": "0.0.1-security",
     "three": "^0.130.1",
+    "tone": "^14.7.77",
     "tslint": "^6.1.2"
   },
   "devDependencies": {
