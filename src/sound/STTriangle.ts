@@ -5,22 +5,26 @@ import { STBaseShapes } from './STBaseShapes';
 
 export class STTriangle extends STBaseShapes
 {
-    private membraneSynth = new Tone.PolySynth(Tone.MembraneSynth);    
+    private membraneSynth = new Tone.PolySynth(Tone.MembraneSynth); 
+    private baseFreq = 150; 
 
-    public TriggerImpact(shapeScale:number, impactStrength:number, effects:BeaterEffects[]) {
-        const synth = this.membraneSynth;
-        const chordsize = 3;
-        const baseFreq = 100;
-        // Modulates volume by impact magnitude.        
-        this.shapeVol.volume.value = 1/chordsize + impactStrength*12;
+    public TriggerImpact(shapeScale:number, impactStrength:number, effects:BeaterEffects[]) {       
         
-        const freqs = SndFuncs.MakeChord(chordsize, chordsize, baseFreq/shapeScale, (baseFreq*1.5)/shapeScale, 33);
-        console.log("Triangle freqs: " + freqs);
+        
+        const synth = this.membraneSynth;
 
-        synth.triggerAttackRelease(freqs, 0.66);
+        let lowerfreq = this.baseFreq/shapeScale;
+        let upperfreq = this.baseFreq * 1.5/shapeScale;
+        let freq = SndFuncs.getRandomInt(lowerfreq, upperfreq, 33);
+
+        // impact strength => velocity
+        let velocity = SndFuncs.clamp(1 - (2/impactStrength), 0.1, 1)        
+        synth.triggerAttackRelease(freq, 0.1, Tone.now(), velocity);
+
+        // Creates signal chain.
         synth.chain(this.chorus, this.shapeVol);
 
-        
+        console.log("impact triggered on STTriangle object. shapeScale: " + shapeScale + " | impactStrength: " + impactStrength + " | effects: " + effects + ". \nFrequency: " + freq + " | velocity: " + velocity);
     }
 
 }

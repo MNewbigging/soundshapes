@@ -1,6 +1,7 @@
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
 import { STSquare } from '../../../sound/STSquare';
+import { STTriangle } from '../../../sound/STTriangle';
 import { Beater, BeaterEffects } from './Beater';
 import { Shape, ShapeType } from './Shape';
 
@@ -9,6 +10,7 @@ const defaultSquareSize = 10;
 export class Square extends Shape {
   public size = defaultSquareSize;
   private sound:STSquare = new STSquare();
+  private temp:STTriangle = new STTriangle(); // just for testing until collisions on triangle are implemented
 
   protected buildMesh() {
     this.mesh = EditorUtils.createSquareMesh(defaultSquareSize, this.id);

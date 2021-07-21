@@ -1,9 +1,11 @@
 import * as THREE from 'three';
+import { ShapesToolbar } from '../../../gui/shapes-toolbar/ShapesToolbar';
 
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
-import { Beater } from './Beater';
-import { Shape } from './Shape';
+import { STTriangle } from '../../../sound/STTriangle';
+import { Beater, BeaterEffects } from './Beater';
+import { Shape, ShapeType } from './Shape';
 
 const defaultTriangleSize = 10;
 
@@ -12,6 +14,8 @@ export class Triangle extends Shape {
   public vertexA = new THREE.Vector3();
   public vertexB = new THREE.Vector3();
   public vertexC = new THREE.Vector3();
+
+  private sound:STTriangle = new STTriangle();
 
   public setPosition(pos: THREE.Vector3) {
     super.setPosition(pos);
@@ -34,7 +38,12 @@ export class Triangle extends Shape {
     this.setVertices();
   }
 
-  protected playSound() {}
+  protected playSound(beater:Beater) {
+    const shapeScale:number = this.scale;
+    const impactStrength:number = beater.speed;
+    const effects:BeaterEffects[] = beater.effects;
+    this.sound.TriggerImpact(shapeScale, impactStrength, effects); 
+  }
 
   private setVertices() {
     const positions = this.mesh.geometry.getAttribute('position').array as number[];
