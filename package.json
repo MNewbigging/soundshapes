@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/react-color": "^3.0.4",
+    "drag-controls": "^1.0.4",
     "file-loader": "^6.1.0",
     "howler": "^2.2.3",
     "matter-js": "^0.17.1",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
+    "@types/drag-controls": "^1.0.0",
     "@types/howler": "^2.2.3",
     "@types/jest": "^24.0.25",
     "@types/matter-js": "^0.17.3",

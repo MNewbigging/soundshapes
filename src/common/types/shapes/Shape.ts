@@ -11,7 +11,9 @@ export abstract class Shape {
   public id: string;
   public type: ShapeType;
   public mesh: THREE.Mesh;
+  public outline: THREE.LineSegments;
 
+  @observable public scale = 1;
   @observable public posX = 0;
   @observable public posY = 0;
 
@@ -19,39 +21,63 @@ export abstract class Shape {
     this.id = id;
     this.type = type;
 
-    // Build own mesh
+    // Build own mesh, set positions after we have the mesh
     this.buildMesh();
     this.posX = this.mesh.position.x;
     this.posY = this.mesh.position.y;
+
+    // Can now build the outline
+    this.createOutline();
+  }
+
+  public createOutline() {
+    const edges = new THREE.EdgesGeometry(this.mesh.geometry);
+    const outlineMat = new THREE.LineBasicMaterial({ color: 'red' });
+    const outline = new THREE.LineSegments(edges, outlineMat);
+    outline.position.set(this.mesh.position.x, this.mesh.position.y, 0);
+    this.outline = outline;
   }
 
   @action public setPosition(pos: THREE.Vector3) {
+    // Update shape mesh
     this.mesh.position.set(pos.x, pos.y, 0);
-    // TODO - this doesn't apply world matrix, so might not be necessary each pos change
-    this.mesh.geometry.computeBoundingBox();
     this.mesh.updateMatrixWorld();
+
+    // And outline
+    this.outline.position.set(this.mesh.position.x, this.mesh.position.y, 0);
 
     // For updating UI
     this.posX = pos.x;
     this.posY = pos.y;
   }
 
+  @action public setScale(scale: number) {
+    this.scale = scale;
+
+    this.mesh.scale.x = scale;
+    this.mesh.scale.y = scale;
+
+    this.outline.scale.x = scale;
+    this.outline.scale.y = scale;
+
+    this.mesh.updateMatrixWorld();
+  }
+
   public addToScene(scene: THREE.Scene): void {
     scene.add(this.mesh);
+  }
+
+  public showOutline(scene: THREE.Scene) {
+    scene.add(this.outline);
+  }
+
+  public hideOutline(scene: THREE.Scene) {
+    scene.remove(this.outline);
   }
 
   public abstract checkCollision(beater: Beater): void;
 
   protected abstract buildMesh(): void;
 
-  protected playSound() {
-    // This gets called when this shape is struck by a beater
-    // We can pass the beater as a parm later, to get its effects (when we implement effects)
-    // Playing sounds:
-    // You can check what kind of shape this is with the type propery, so you could
-    // pass this into your own function to decide what kind of sound to play
-    // Or, better, if you're making your own class hierarchy, you can add the correct
-    // sound type as a new property to the shape classes (not this one). E.g, go to
-    // Square.ts and add your sound property there.
-  }
+  protected abstract playSound(beater: Beater): void;
 }

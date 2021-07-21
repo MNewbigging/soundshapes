@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { SceneUtils } from './SceneUtils';
 
 export interface SceneLimits {
@@ -24,11 +25,14 @@ export class GameScene {
 
   constructor() {
     // Setup the scene
-    this.renderer = new THREE.WebGLRenderer();
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight - 1);
     this.renderer.setClearColor(0xffffff, 1);
     document.body.appendChild(this.renderer.domElement);
 
+    // Camera
     this.camera = new THREE.PerspectiveCamera(
       this.cameraFov,
       window.innerWidth / window.innerHeight,
@@ -38,9 +42,18 @@ export class GameScene {
     this.camera.position.set(0, 0, this.cameraDepth);
     this.camera.lookAt(0, 0, 0);
 
+    // Calculate screen limits
     this.sceneLimits = SceneUtils.calculateScreenLimits(0, this.camera);
 
+    // Create the scene
     this.scene = new THREE.Scene();
+
+    // Add lighting
+    // const color = new THREE.Color('#b1e1ff');
+    // const groundCol = new THREE.Color('#b92056');
+    // const intensity = 1;
+    // const light = new THREE.HemisphereLight(color, groundCol, intensity);
+    // this.scene.add(light);
   }
 
   public start() {

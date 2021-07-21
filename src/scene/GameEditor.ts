@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import DragControls from 'drag-controls';
 
 import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
@@ -20,7 +21,8 @@ export class GameEditor {
   private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
   private selectedShape?: Shape;
-  private selectedShapeOutline?: THREE.LineSegments;
+  private dragControls: DragControls;
+  private dragPrevPos?: THREE.Vector3;
 
   constructor(gameScene: GameScene) {
     this.gameScene = gameScene;
@@ -28,8 +30,16 @@ export class GameEditor {
     eventManager.registerEventListener(EventType.START_ADD_SHAPE, this.startAddShape);
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     eventManager.registerEventListener(EventType.REPOSITION_SHAPE, this.onChangePosition);
+    eventManager.registerEventListener(EventType.SCALE_SHAPE, this.onChangeScale);
 
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
+
+    DragControls.install({ THREE: THREE });
+    this.dragControls = new DragControls(
+      [],
+      this.gameScene.camera,
+      this.gameScene.renderer.domElement
+    );
   }
 
   public activate() {
@@ -43,6 +53,9 @@ export class GameEditor {
         beater.showDirectionLine(this.gameScene.scene);
       });
     }
+
+    this.createDragControls();
+    this.activateDragControls();
   }
 
   public deactivate() {
@@ -56,6 +69,8 @@ export class GameEditor {
         beater.hideDirectionLine(this.gameScene.scene);
       });
     }
+
+    this.disableDragControls();
   }
 
   public update = () => {
@@ -86,8 +101,11 @@ export class GameEditor {
       return;
     }
 
+    // Set mouse position via given event (avoids jumping from last known mouse pos)
+    this.setMousePosition(event.mouseEvent.clientX, event.mouseEvent.clientY);
+
     // Start tracking mouse
-    window.addEventListener('mousemove', this.setMousePosition);
+    window.addEventListener('mousemove', this.onMouseMove);
 
     // Make the new shape
     const shape = EditorUtils.createShape(RandomId.createId(), event.shapeType);
@@ -104,7 +122,7 @@ export class GameEditor {
     }
 
     // Stop listening to mouse movement
-    window.removeEventListener('mousemove', this.setMousePosition);
+    window.removeEventListener('mousemove', this.onMouseMove);
 
     if (!this.mouseShape) {
       return;
@@ -125,7 +143,7 @@ export class GameEditor {
     switch (this.editState) {
       case EditStates.IDLE:
         // Set mouse position first
-        this.setMousePosition(e);
+        this.onMouseMove(e);
 
         // Did user select a shape?
         const clickedShape = EditorUtils.clickedShape(this.shapes, this.mousePos);
@@ -150,19 +168,14 @@ export class GameEditor {
     // Set the new position
     this.mouseShape.setPosition(this.mousePos);
 
-    // Ensure this new shape doesn't intersect any others in the scene
-    this.mouseShape.mesh.geometry.computeBoundingBox();
-    for (const shape of this.shapes) {
-      const intersects = EditorUtils.meshesIntersectAABB(this.mouseShape.mesh, shape.mesh);
-      if (intersects) {
-        // TODO - should have some visual cue to say the placement didn't work
-        console.log('cannot place on top of other shapes');
-        return;
-      }
-    }
+    const valid = EditorUtils.shapePositionValid(
+      this.mouseShape,
+      this.gameScene.sceneLimits,
+      this.shapes
+    );
 
-    // Ensure it isn't out of bounds
-    if (EditorUtils.meshOutOfBounds(this.mouseShape.mesh, this.gameScene.sceneLimits)) {
+    if (!valid) {
+      console.log('cannot place shape there!');
       return;
     }
 
@@ -176,13 +189,20 @@ export class GameEditor {
     // Add to shapes pool
     this.shapes.push(this.mouseShape);
 
+    // Select it
+    this.selectShape(this.mouseShape);
+
     // Remove reference to it, update state, fire addition event
     this.mouseShape = undefined;
     this.editState = EditStates.IDLE;
     eventManager.fire({ e: EventType.ADD_SHAPE });
 
     // Stop listening to mouse movement
-    window.removeEventListener('mousemove', this.setMousePosition);
+    window.removeEventListener('mousemove', this.onMouseMove);
+
+    // Setup drag controls for the new object
+    this.createDragControls();
+    this.activateDragControls();
   }
 
   private selectShape(shape: Shape) {
@@ -195,12 +215,7 @@ export class GameEditor {
 
     this.selectedShape = shape;
 
-    // Outline the shape
-    const edges = new THREE.EdgesGeometry(shape.mesh.geometry);
-    const outline = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xff0000 }));
-    outline.position.set(shape.mesh.position.x, shape.mesh.position.y, 0);
-    this.selectedShapeOutline = outline;
-    this.gameScene.scene.add(outline);
+    this.selectedShape.showOutline(this.gameScene.scene);
 
     eventManager.fire({ e: EventType.SELECT_SHAPE, shape });
   }
@@ -211,8 +226,7 @@ export class GameEditor {
 
   private deselectShape() {
     if (this.selectedShape) {
-      this.gameScene.scene.remove(this.selectedShapeOutline);
-      this.selectedShapeOutline = undefined;
+      this.selectedShape.hideOutline(this.gameScene.scene);
       this.selectedShape = undefined;
       eventManager.fire({ e: EventType.DESELECT_SHAPE });
     }
@@ -229,29 +243,52 @@ export class GameEditor {
     // First, move shape to new position
     this.selectedShape.setPosition(newPos);
 
-    // Check new pos against screen bounds
-    if (EditorUtils.meshOutOfBounds(this.selectedShape.mesh, this.gameScene.sceneLimits)) {
-      console.log('out of bounds');
-      this.selectedShape.setPosition(oldPos);
-      return;
-    }
+    // Then check that position is valid for that shape to be in
+    const valid = EditorUtils.shapePositionValid(
+      this.selectedShape,
+      this.gameScene.sceneLimits,
+      this.shapes
+    );
 
-    // Then, check for collisions - if any, move it back
-    const others = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
-    const collides = EditorUtils.shapeIntersectsOthers(this.selectedShape, others);
-
-    if (collides) {
+    if (!valid) {
+      console.log('invalid position!');
       this.selectedShape.setPosition(oldPos);
-    } else {
-      // Adjust selected shape outline too
-      this.selectedShapeOutline.position.set(newPos.x, newPos.y, 0);
     }
   };
 
-  private readonly setMousePosition = (e: MouseEvent) => {
+  private readonly onChangeScale = (event: GameEvent) => {
+    if (event.e !== EventType.SCALE_SHAPE || !this.selectedShape) {
+      return;
+    }
+
+    const newScale = event.scale;
+    const oldScale = this.selectedShape.scale;
+
+    // Set to new scale
+    this.selectedShape.setScale(newScale);
+
+    // Check it is still in bounds/not colliding
+    const valid = EditorUtils.shapePositionValid(
+      this.selectedShape,
+      this.gameScene.sceneLimits,
+      this.shapes
+    );
+
+    // If invalid, revert scale
+    if (!valid) {
+      console.log('invalid scale');
+      this.selectedShape.setScale(oldScale);
+    }
+  };
+
+  private readonly onMouseMove = (e: MouseEvent) => {
+    this.setMousePosition(e.clientX, e.clientY);
+  };
+
+  private setMousePosition(mouseX: number, mouseY: number) {
     // Get mouse position relative to game canvas
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = -(e.clientY / window.innerHeight) * 2 + 1;
+    const x = (mouseX / window.innerWidth) * 2 - 1;
+    const y = -(mouseY / window.innerHeight) * 2 + 1;
     const vec = new THREE.Vector3(x, y, 0);
     vec.unproject(this.gameScene.camera);
     vec.sub(this.gameScene.camera.position).normalize();
@@ -259,5 +296,71 @@ export class GameEditor {
     vec.multiplyScalar(dist);
     vec.z = 0;
     this.mousePos = vec;
+  }
+
+  private createDragControls() {
+    if (this.shapes.length) {
+      const dragObjects = this.shapes.map((shape) => shape.mesh);
+      this.dragControls = new DragControls(
+        dragObjects,
+        this.gameScene.camera,
+        this.gameScene.renderer.domElement
+      );
+    }
+  }
+
+  private activateDragControls() {
+    this.dragControls.addEventListener('dragstart', this.onDragStart);
+    this.dragControls.addEventListener('drag', this.onDrag);
+    this.dragControls.addEventListener('dragend', this.onDragEnd);
+
+    // Highlight on hover - not firing
+    // this.dragControls.addEventListener('hoveron', (e) => {
+    //   //console.log('hover', e);
+    // });
+  }
+
+  private readonly onDragStart = (e: THREE.Event) => {
+    if (e.object) {
+      // Find shape being dragged
+      const id = e.object.name;
+      const shape = this.shapes.find((shape) => shape.id === id);
+      if (shape) {
+        // Select shape
+        this.selectShape(shape);
+        // Save current position to revert to later if movement invalid
+        this.dragPrevPos = new THREE.Vector3().copy(shape.mesh.position);
+      }
+    }
   };
+
+  private readonly onDrag = (e: THREE.Event) => {
+    if (e.object && this.selectedShape) {
+      this.selectedShape.setPosition(e.object.position);
+    }
+    this.gameScene.renderer.render(this.gameScene.scene, this.gameScene.camera);
+  };
+
+  private readonly onDragEnd = (e: THREE.Event) => {
+    if (e.object && this.selectedShape) {
+      // Check object's new position is valid
+      const valid = EditorUtils.shapePositionValid(
+        this.selectedShape,
+        this.gameScene.sceneLimits,
+        this.shapes
+      );
+      if (!valid && this.dragPrevPos) {
+        // Revert to previous position
+        this.selectedShape.setPosition(this.dragPrevPos);
+      }
+    }
+  };
+
+  private disableDragControls() {
+    if (!this.dragControls) {
+      return;
+    }
+
+    this.dragControls.deactivate();
+  }
 }

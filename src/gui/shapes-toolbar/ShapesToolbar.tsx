@@ -28,7 +28,7 @@ export class ShapesToolbar extends React.Component<Props> {
     const { guiState } = this.props;
 
     return (
-      <GuiButton onClick={() => guiState.addShape(ShapeType.BEATER)}>
+      <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.BEATER, e)}>
         <div className={'icon beater'}></div>
       </GuiButton>
     );
@@ -38,7 +38,7 @@ export class ShapesToolbar extends React.Component<Props> {
     const { guiState } = this.props;
 
     return (
-      <GuiButton onClick={() => guiState.addShape(ShapeType.SQUARE)}>
+      <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.SQUARE, e)}>
         <div className={'icon square'}></div>
       </GuiButton>
     );

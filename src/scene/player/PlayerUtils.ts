@@ -90,8 +90,6 @@ export class PlayerUtils {
       return;
     }
 
-    console.log('collision');
-
     // Step 1 - displace beaters so they no longer overlap
     const distance = Math.sqrt(distanceSq);
 
@@ -183,8 +181,6 @@ export class PlayerUtils {
       beater.radius
     );
     if (collides) {
-      console.log('colliding');
-
       // Find nearest points on rect
       const halfSize = square.size * 0.5;
 

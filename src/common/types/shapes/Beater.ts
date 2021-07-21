@@ -5,10 +5,21 @@ import { Shape, ShapeType } from './Shape';
 
 const defaultBeaterRadius = 3;
 
+export enum BeaterEffects {
+  // I don't think this should be necessary really, if the array is empty then no effect
+  // Just putting this here for now because enums need at least 1 value!
+
+  // You could add more values here, hardcode-add them to array below to test results
+  // I.e on below line: @observable public effects: BeaterEffects[] = [];
+  // In the second pair of brackets do: ... = [BeaterEffects.Effect1, BeaterEffects.Effect2] etc
+  NONE = 'none',
+}
+
 export class Beater extends Shape {
   // Observables are for updating GUI
   @observable public speed = 1;
   @observable public rotation = 0;
+  @observable public effects: BeaterEffects[] = [];
 
   // Readonly for now
   public readonly radius = defaultBeaterRadius;
@@ -45,7 +56,11 @@ export class Beater extends Shape {
   }
 
   protected buildMesh() {
-    this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius);
+    this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius, this.id);
+  }
+
+  protected playSound() {
+    // Doesn't!
   }
 
   public updateDirectionLine() {
