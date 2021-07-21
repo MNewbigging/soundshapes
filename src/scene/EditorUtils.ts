@@ -117,16 +117,17 @@ export class EditorUtils {
     const ax = 0;
     const ay = 0 + size * (Math.sqrt(3) / 3);
     tri.moveTo(ax, ay);
-    console.log('ax: ' + ax + ' ay: ' + ay);
+
     // Point B - down to left of center point
     const bx = 0 - size / 2;
     const by = 0 - size * (Math.sqrt(3) / 6);
     tri.lineTo(bx, by);
-    console.log('bx: ' + bx + ' by: ' + by);
+
     // Point C
     const cx = 0 + size / 2;
     tri.lineTo(cx, by);
-    console.log('cx: ' + cx + ' cy: ' + by);
+
+    // Connect back to A
     tri.lineTo(ax, ay);
 
     const geom = new THREE.ShapeGeometry(tri);

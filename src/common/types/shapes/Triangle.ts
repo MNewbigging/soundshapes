@@ -18,6 +18,12 @@ export class Triangle extends Shape {
     this.setVertices();
   }
 
+  public setScale(scale: number) {
+    super.setScale(scale);
+    this.size *= scale;
+    this.setVertices();
+  }
+
   public checkCollision(beater: Beater) {
     PlayerUtils.circleToTriangleCollision(beater, this);
   }
@@ -36,16 +42,14 @@ export class Triangle extends Shape {
     for (let i = 0; i < 9; i += 3) {
       vertices.push(
         new THREE.Vector3(
-          positions[i] + this.mesh.position.x,
-          positions[i + 1] + this.mesh.position.y,
-          positions[i + 2]
+          positions[i] * this.scale + this.mesh.position.x,
+          positions[i + 1] * this.scale + this.mesh.position.y,
+          0 // z always 0
         )
       );
     }
     this.vertexA = vertices[0];
     this.vertexB = vertices[1];
     this.vertexC = vertices[2];
-
-    console.log('vertices: ', vertices);
   }
 }
