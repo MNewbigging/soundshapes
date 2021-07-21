@@ -1,5 +1,6 @@
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
+import { STSquare } from '../../../sound/STSquare';
 import { Beater, BeaterEffects } from './Beater';
 import { Shape, ShapeType } from './Shape';
 
@@ -7,6 +8,7 @@ const defaultSquareSize = 10;
 
 export class Square extends Shape {
   public size = defaultSquareSize;
+  private sound:STSquare = new STSquare();
 
   protected buildMesh() {
     this.mesh = EditorUtils.createSquareMesh(defaultSquareSize, this.id);
@@ -32,7 +34,8 @@ export class Square extends Shape {
     // For passing this data to your classes:
     // Make STSquare a property of this class: private sound: STSquare = new STQuare() above
     // Then you can do here:
-    // this.sound.triggerImpact(shapeScale, impactStrength, effects);
+    this.sound.TriggerImpact(shapeScale, impactStrength, effects);
+    
   }
 
   public checkCollision(beater: Beater) {

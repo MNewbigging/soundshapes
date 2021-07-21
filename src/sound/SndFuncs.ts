@@ -2,6 +2,8 @@ import * as Tone from 'tone';
 
 export class SndFuncs
 {
+    public static minimum = -80;
+
     public static MakeChord(chordMin:number, chordMax:number, noteMin:number, noteMax:number, interval:number) {
         const notes = <number[]>[];
         const notesLen = this.getRandomInt(chordMin, chordMax, 1);
@@ -18,6 +20,10 @@ export class SndFuncs
         min /= interval;
         max /= interval;
         return interval * Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    public static clamp(value:number, min:number, max:number){
+        return Math.max(min, Math.min(value, max));
     }
 
 

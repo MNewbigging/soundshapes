@@ -1,30 +1,32 @@
 import * as Tone from 'tone';
+import { BeaterEffects } from '../common/types/shapes/Beater';
 import { STBaseShapes } from './STBaseShapes';
 
 export class STCircle extends STBaseShapes
 {
-    public TriggerImpact(magnitude:number) {
-        // Impact magnitude lowers pitch, and increases volume and density.
+    public TriggerImpact(shapeScale:number, impactStrength:number, beater:BeaterEffects[]) {
+        // impactStrength lowers pitch, and increases volume and density.
         const baseFreq = 400;
-        const notes = 3 + Math.floor(magnitude*5);
+        const notes = 3 + Math.floor(impactStrength*5);
 
         const freqs = <number[]>[];
         
-        this.MakeSine(this.size, baseFreq, 1);
+        // Create single sine at base frequency.
+        this.MakeSine(shapeScale, baseFreq, 1);
         freqs.push(baseFreq);
-        
+
+        // Add in other sines around base frequency for wobble.        
         for (let i = 0; i < notes; ++i) {
             let  jitter = 30;
             jitter = (jitter / 2) - (Math.floor( Math.random() * jitter));
             const freq = baseFreq + jitter;
-            this.MakeSine(this.size, freq, notes);
+            this.MakeSine(shapeScale, freq, notes);
 
             freqs.push(freq);
         }
-        console.log("circle freqs: " + freqs);
-        this.shapeVol.volume.value = 1/notes + magnitude*12;
-        
 
+        console.log("circle freqs: " + freqs);
+        this.shapeVol.volume.value = 1 / notes + impactStrength * 12;
     }
 
     private MakeSine (shapeSize:number, freq:number, chordsize:number) {               

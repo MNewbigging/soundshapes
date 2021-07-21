@@ -4,8 +4,6 @@ import * as Tone from 'tone';
 export class STBaseShapes 
 {
     // Base Class for Sound Triggers (Shapes)
-
-    public size = 1;
     public outputVol = new Tone.Volume(-24).toDestination();
     public shapeVol = new Tone.Volume(0).connect(this.outputVol);
     
