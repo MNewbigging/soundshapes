@@ -4,6 +4,7 @@ import { Beater } from './Beater';
 
 export enum ShapeType {
   BEATER = 'beater',
+  TRIANGLE = 'triangle',
   SQUARE = 'square',
 }
 

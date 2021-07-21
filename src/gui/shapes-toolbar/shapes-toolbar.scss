@@ -13,10 +13,14 @@
 
   .beater {
     border-radius: 50%;
-    border: 1px solid $buttonTextColor;
+    border: solid $buttonTextColor;
+  }
+
+  .triangle {
+    margin-bottom: 5px;
   }
 
   .square {
-    border: 1px solid $buttonTextColor;
+    border: solid $buttonTextColor;
   }
 }

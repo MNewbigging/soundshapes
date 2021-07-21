@@ -40,6 +40,7 @@ export class PropsToolbar extends React.Component<Props> {
           </div>
         );
 
+      case ShapeType.TRIANGLE:
       case ShapeType.SQUARE:
         return (
           <div>

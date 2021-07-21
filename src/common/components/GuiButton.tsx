@@ -1,4 +1,3 @@
-import { Mouse } from 'matter-js';
 import React from 'react';
 
 interface ButtonProps {
