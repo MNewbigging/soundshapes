@@ -37,6 +37,8 @@ export abstract class Shape {
     const outline = new THREE.LineSegments(edges, outlineMat);
     outline.position.set(this.mesh.position.x, this.mesh.position.y, 0);
     this.outline = outline;
+
+    console.log('outline', this.outline.geometry.getAttribute('position'));
   }
 
   @action public setPosition(pos: THREE.Vector3) {

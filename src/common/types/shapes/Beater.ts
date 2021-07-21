@@ -1,6 +1,8 @@
 import { action, observable } from 'mobx';
 import * as THREE from 'three';
+
 import { EditorUtils } from '../../../scene/EditorUtils';
+import { movementMultiplier } from '../../../scene/player/GamePlayer';
 import { Shape, ShapeType } from './Shape';
 
 const defaultBeaterRadius = 3;
@@ -31,7 +33,8 @@ export class Beater extends Shape {
   private directionLineEndPoint = new THREE.Vector2();
 
   // Player values
-  public direction = new THREE.Vector2().copy(this.defaultDirection);
+  public velocity = new THREE.Vector2().copy(this.defaultDirection);
+  public testedColsThisFrame = false;
 
   constructor(id: string, type: ShapeType) {
     super(id, type);
@@ -116,7 +119,10 @@ export class Beater extends Shape {
     const face = new THREE.Vector2()
       .copy(this.directionLineEndPoint)
       .sub(new THREE.Vector2(this.mesh.position.x, this.mesh.position.y));
-    this.direction = face.normalize();
+    this.velocity = face.normalize();
+
+    this.velocity.x *= this.speed * movementMultiplier;
+    this.velocity.y *= this.speed * movementMultiplier;
   }
 
   public resetPosition() {

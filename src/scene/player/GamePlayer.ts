@@ -30,16 +30,25 @@ export class GamePlayer {
   }
 
   public update = () => {
-    // Move all the beaters, then check for collisions
+    // Move all the beaters
     this.beaters.forEach((beater) => {
       this.moveBeater(beater);
-      this.checkCollisions(beater);
     });
+
+    // Check for collisions
+    this.beaters.forEach((beater) => {
+      if (!beater.testedColsThisFrame) {
+        this.checkCollisions(beater);
+      }
+    });
+
+    // Reset beaters for next frame
+    this.beaters.forEach((beater) => (beater.testedColsThisFrame = false));
   };
 
   private moveBeater(beater: Beater) {
-    beater.mesh.position.x += beater.direction.x * beater.speed * movementMultiplier;
-    beater.mesh.position.y += beater.direction.y * beater.speed * movementMultiplier;
+    beater.mesh.position.x += beater.velocity.x;
+    beater.mesh.position.y += beater.velocity.y;
   }
 
   private checkCollisions(beater: Beater) {

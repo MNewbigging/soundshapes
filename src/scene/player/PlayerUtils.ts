@@ -15,7 +15,7 @@ export class PlayerUtils {
     // Horizontal bounds
     if (bx - r < -screenLimits.xMax) {
       // Flip x direction
-      beater.direction.x *= -1;
+      beater.velocity.x *= -1;
 
       // Find distance crossed over and displace beater
       const dist = bx - r - -screenLimits.xMax;
@@ -23,7 +23,7 @@ export class PlayerUtils {
       //
     } else if (bx + r > screenLimits.xMax) {
       // Flip x direction
-      beater.direction.x *= -1;
+      beater.velocity.x *= -1;
 
       // Find distance crossed over and displace beater
       const dist = bx + r - screenLimits.xMax;
@@ -33,7 +33,7 @@ export class PlayerUtils {
     // Vertical bounds
     if (by - r < -screenLimits.yMax) {
       // Flip y direction
-      beater.direction.y *= -1;
+      beater.velocity.y *= -1;
 
       // Find distance crossed over and displace beater
       const dist = by - r - -screenLimits.yMax;
@@ -42,7 +42,7 @@ export class PlayerUtils {
       // Find
     } else if (by + r > screenLimits.yMax) {
       // Flip y direction
-      beater.direction.y *= -1;
+      beater.velocity.y *= -1;
 
       // Find distance crossed over and displace beater
       const dist = by + r - screenLimits.yMax;
@@ -52,7 +52,7 @@ export class PlayerUtils {
 
   public static checkBeaterToBeaterCollision(beater: Beater, others: Beater[]) {
     // Only check against the closest other
-    //const target = PlayerUtils.getClosestShape(beater, others) as Beater;
+    // Do this manually here to reuse distanceSq value
     let closestDist = Infinity;
     let closestIdx = -1;
     others.forEach((other, i) => {
@@ -70,26 +70,27 @@ export class PlayerUtils {
 
     const target = others[closestIdx];
 
+    // First check if circles are moving towards each other
+
     // Do the circles overlap each other?
     const beaterPos = new THREE.Vector2(beater.mesh.position.x, beater.mesh.position.y);
     const targetPos = new THREE.Vector2(target.mesh.position.x, target.mesh.position.y);
 
     // Get the distance from target to beater
-    // const distanceSq =
-    //   (targetPos.x - beaterPos.x) * (targetPos.x - beaterPos.x) +
-    //   (targetPos.y - beaterPos.y) * (targetPos.y - beaterPos.y);
     const bt = new THREE.Vector2().copy(targetPos).sub(beaterPos);
-    //const distanceSq = bt.lengthSq();
     const distanceSq = closestDist;
 
     // Check if the distance is less than the sum of both beater's radii
-    const radii = 6; // TODO - import this from somewhere
+    const radii = beater.radius + target.radius; // TODO - import this from somewhere
     const intersects = Math.abs(distanceSq) < radii * radii;
 
     if (!intersects) {
       return;
     }
 
+    target.testedColsThisFrame = true;
+
+    console.log('collision');
     // Step 1 - displace beaters so they no longer overlap
     const distance = Math.sqrt(distanceSq);
 
@@ -108,43 +109,43 @@ export class PlayerUtils {
     // Step 2 - adjust directions of both beaters according to collision
 
     // Reflect beater direction by col normal
-    const colNormal = bt.normalize();
-    const scalar = 2 * beater.direction.dot(colNormal);
-    const scaledVec = new THREE.Vector2().copy(colNormal).multiplyScalar(scalar);
+    // const colNormal = bt.normalize();
+    // const dot = 2 * beater.direction.dot(colNormal);
+    // const scaledVec = colNormal.multiplyScalar(dot);
 
-    beater.direction.x -= scaledVec.x;
-    beater.direction.y -= scaledVec.y;
+    // beater.direction.x -= scaledVec.x;
+    // beater.direction.y -= scaledVec.y;
 
-    // Do the same for target
-    const tb = new THREE.Vector2().copy(beaterPos).sub(targetPos);
-    const tn = tb.normalize();
-    const ts = 2 * target.direction.dot(tn);
-    const tsv = new THREE.Vector2().copy(tn).multiplyScalar(ts);
+    // // Do the same for target
+    // const tb = new THREE.Vector2().copy(beaterPos).sub(targetPos);
+    // const tn = tb.normalize();
+    // const ts = 2 * target.direction.dot(tn);
+    // const tsv = tn.multiplyScalar(ts);
 
-    target.direction.x -= tsv.x;
-    target.direction.y -= tsv.y;
+    // target.direction.x -= tsv.x;
+    // target.direction.y -= tsv.y;
 
     // NOTE - this passes momentum so can affect speed
     // Angles
-    // const angle = Math.atan2(bt.x, bt.y);
-    // const sin = Math.sin(angle);
-    // const cos = Math.cos(angle);
+    const angle = Math.atan2(bt.x, bt.y);
+    const sin = Math.sin(angle);
+    const cos = Math.cos(angle);
 
-    // // Beater perpendicular velocity
-    // const vx1 = beater.direction.x * cos + beater.direction.y * sin;
-    // const vy1 = beater.direction.y * cos - beater.direction.x * sin;
+    // Beater perpendicular velocity
+    const vx1 = beater.velocity.x * cos + beater.velocity.y * sin;
+    const vy1 = beater.velocity.y * cos - beater.velocity.x * sin;
 
-    // // Target beater perp vel
-    // const vx2 = target.direction.x * cos + target.direction.y * sin;
-    // const vy2 = target.direction.y * cos - target.direction.x * sin;
+    // Target beater perp vel
+    const vx2 = target.velocity.x * cos + target.velocity.y * sin;
+    const vy2 = target.velocity.y * cos - target.velocity.x * sin;
 
-    // // Swap the x vel (y is parallel so doesn't matter)
-    // // and rotate back the adjustd per velocities
-    // beater.direction.x = vx2 * cos - vy1 * sin;
-    // beater.direction.y = vy1 * cos + vx2 * sin;
+    // Swap the x vel (y is parallel so doesn't matter)
+    // and rotate back the adjustd per velocities
+    beater.velocity.x = vx2 * cos - vy1 * sin;
+    beater.velocity.y = vy1 * cos + vx2 * sin;
 
-    // target.direction.x = vx1 * cos - vy2 * sin;
-    // target.direction.y = vy2 * cos + vx1 * sin;
+    target.velocity.x = vx1 * cos - vy2 * sin;
+    target.velocity.y = vy2 * cos + vx1 * sin;
   }
 
   public static getClosestShape(shape: Shape, others: Shape[]): Shape {
@@ -153,7 +154,7 @@ export class PlayerUtils {
     others.forEach((other, i) => {
       // Ignore self
       if (other.id !== shape.id) {
-        const distSq = other.mesh.position.distanceToSquared(other.mesh.position);
+        const distSq = shape.mesh.position.distanceToSquared(other.mesh.position);
         if (distSq < closestDist) {
           closestDist = distSq;
           closestIdx = i;
@@ -165,8 +166,9 @@ export class PlayerUtils {
   }
 
   public static checkShapeCollisions(beater: Beater, shapes: Shape[]) {
-    // Determine which calculation to run based on shape type
-    shapes.forEach((shape) => shape.checkCollision(beater));
+    // Only check against closest shape
+    const closest = PlayerUtils.getClosestShape(beater, shapes);
+    closest.checkCollision(beater);
   }
 
   public static circleToSquareCollision(beater: Beater, square: Square): boolean {
@@ -180,6 +182,7 @@ export class PlayerUtils {
       circlePos,
       beater.radius
     );
+
     if (collides) {
       // Find nearest points on rect
       const halfSize = square.size * 0.5;
@@ -194,12 +197,12 @@ export class PlayerUtils {
 
       // Reflect around nearest point normal
       const dist = new THREE.Vector2(circlePos.x - xNearest, circlePos.y - yNearest);
-      const dn = dist.normalize();
-      const dot = 2 * beater.direction.dot(dn);
-      const scaled = new THREE.Vector2().copy(dn).multiplyScalar(dot);
+      const distNormal = dist.normalize();
+      const dot = 2 * beater.velocity.dot(distNormal);
+      const scaled = distNormal.multiplyScalar(dot);
 
-      beater.direction.x -= scaled.x;
-      beater.direction.y -= scaled.y;
+      beater.velocity.x -= scaled.x;
+      beater.velocity.y -= scaled.y;
 
       // Move out of collision area
       // TODO - works too well - moves too far!
@@ -264,11 +267,11 @@ export class PlayerUtils {
       const distNormal = distVec.normalize();
       const dnv2 = new THREE.Vector2(distNormal.x, distNormal.y);
 
-      const dot = 2 * beater.direction.dot(dnv2);
+      const dot = 2 * beater.velocity.dot(dnv2);
       const scaled = new THREE.Vector2().copy(dnv2).multiplyScalar(dot);
 
-      beater.direction.x -= scaled.x;
-      beater.direction.y -= scaled.y;
+      beater.velocity.x -= scaled.x;
+      beater.velocity.y -= scaled.y;
     }
   }
 }
