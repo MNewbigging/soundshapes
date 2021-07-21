@@ -126,7 +126,7 @@ export class EditorUtils {
     // Point C
     const cx = 0 + size / 2;
     tri.lineTo(cx, by);
-    console.log('cx: ', cx);
+    console.log('cx: ' + cx + ' cy: ' + by);
     tri.lineTo(ax, ay);
 
     const geom = new THREE.ShapeGeometry(tri);

@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { Beater } from '../../common/types/shapes/Beater';
 import { Shape } from '../../common/types/shapes/Shape';
 import { Square } from '../../common/types/shapes/Square';
+import { Triangle } from '../../common/types/shapes/Triangle';
 import { SceneLimits } from '../GameScene';
-import { movementMultiplier } from './GamePlayer';
 
 export class PlayerUtils {
   public static checkBoundsCollisions(beater: Beater, screenLimits: SceneLimits) {
@@ -192,10 +192,11 @@ export class PlayerUtils {
       const rectBot = rectPos.y - halfSize;
       const yNearest = Math.max(rectBot, Math.min(circlePos.y, rectTop));
 
+      // Reflect around nearest point normal
       const dist = new THREE.Vector2(circlePos.x - xNearest, circlePos.y - yNearest);
       const dn = dist.normalize();
-      const scalar = 2 * beater.direction.dot(dn);
-      const scaled = new THREE.Vector2().copy(dn).multiplyScalar(scalar);
+      const dot = 2 * beater.direction.dot(dn);
+      const scaled = new THREE.Vector2().copy(dn).multiplyScalar(dot);
 
       beater.direction.x -= scaled.x;
       beater.direction.y -= scaled.y;
@@ -239,5 +240,35 @@ export class PlayerUtils {
       (dx - halfWidth) * (dx - halfWidth) + (dy - halfHeight) * (dy - halfHeight);
 
     return cornerDistSq <= cR * cR;
+  }
+
+  public static circleToTriangleCollision(beater: Beater, triangle: Triangle) {
+    // Create a new triangle shape to represent our mesh obj
+    //const v = new THREE.Vector3();
+    //triangle.mesh.localToWorld(v);
+
+    // Make a copy of the triangle (has methods for closest point)
+    const tri = new THREE.Triangle(triangle.vertexA, triangle.vertexB, triangle.vertexC);
+
+    // Get the closest point to circle on the triangle
+    const closestPoint = new THREE.Vector3();
+    tri.closestPointToPoint(beater.mesh.position, closestPoint);
+
+    // Get distance from closest point to circle center (sq)
+    const distVec = new THREE.Vector3().copy(beater.mesh.position).sub(closestPoint);
+    const distSq = distVec.lengthSq();
+
+    // Is distance sq smaller than beater radius squared?
+    if (distSq < beater.radius * beater.radius) {
+      // Collides; reflect around closest point normal
+      const distNormal = distVec.normalize();
+      const dnv2 = new THREE.Vector2(distNormal.x, distNormal.y);
+
+      const dot = 2 * beater.direction.dot(dnv2);
+      const scaled = new THREE.Vector2().copy(dnv2).multiplyScalar(dot);
+
+      beater.direction.x -= scaled.x;
+      beater.direction.y -= scaled.y;
+    }
   }
 }
