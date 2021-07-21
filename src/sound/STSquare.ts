@@ -9,6 +9,7 @@ export class STSquare extends STBaseShapes
     
     public TriggerImpact(shapeScale:number, impactStrength:number, effects:BeaterEffects[]) 
     {
+        console.log("impact triggered on STSquare object. shapeScale: " + shapeScale + " | impactStrength: " + impactStrength + " | effects: " + effects);
         // magnitude: 0-1
         this.sqrSynth.set({
             oscillator: {
@@ -27,8 +28,6 @@ export class STSquare extends STBaseShapes
         const chordsize = 4;
         const lowerfreq = 100;
         const upperfreq = 400;
-
-        shapeScale *= 0.1; // sets shapescale at default of 1.0
 
         const freqs = SndFuncs.MakeChord(
             chordsize, chordsize+2, 
