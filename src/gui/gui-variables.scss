@@ -12,6 +12,8 @@ $drawerWidth: 200px;
 $drawerBackgroundColor: rgb(153, 152, 152);
 $drawerBorderColor: gray;
 
+$iconBorderWidth: 3px;
+
 * {
   font-family: 'Quicksand', sans-serif;
   font-weight: 400;
@@ -20,6 +22,7 @@ $drawerBorderColor: gray;
 .icon {
   width: 30px;
   height: 30px;
+  border-width: $iconBorderWidth;
 }
 
 .ui-button {
@@ -38,6 +41,13 @@ $drawerBorderColor: gray;
   &:hover {
     background-color: $buttonHoverColor;
     cursor: pointer;
+  }
+
+  #triangle {
+    fill: none;
+    stroke: $buttonTextColor;
+    stroke-width: 6px;
+    //shape-rendering: crispEdges;
   }
 }
 

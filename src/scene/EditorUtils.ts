@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Beater } from '../common/types/shapes/Beater';
 import { Shape, ShapeType } from '../common/types/shapes/Shape';
 import { Square } from '../common/types/shapes/Square';
+import { Triangle } from '../common/types/shapes/Triangle';
 import { SceneLimits } from './GameScene';
 
 export class EditorUtils {
@@ -79,6 +80,9 @@ export class EditorUtils {
       case ShapeType.BEATER:
         shape = new Beater(id, shapeType);
         break;
+      case ShapeType.TRIANGLE:
+        shape = new Triangle(id, shapeType);
+        break;
       case ShapeType.SQUARE:
         shape = new Square(id, shapeType);
         break;
@@ -92,6 +96,41 @@ export class EditorUtils {
 
     const geom = new THREE.CircleGeometry(radius, beaterSegments, 0, Math.PI * 2);
     const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.name = id;
+
+    return mesh;
+  }
+
+  public static createTriangleMesh(size: number, id: string) {
+    const mat = new THREE.MeshBasicMaterial({ color: 'blue' });
+    const tri = new THREE.Shape();
+
+    // Starting point is 0, 0 which is the center dot
+    /**
+     *        A
+     *        .
+     *     B     C
+     */
+
+    // Point A - sits above center point
+    const ax = 0;
+    const ay = 0 + size * (Math.sqrt(3) / 3);
+    tri.moveTo(ax, ay);
+
+    // Point B - down to left of center point
+    const bx = 0 - size / 2;
+    const by = 0 - size * (Math.sqrt(3) / 6);
+    tri.lineTo(bx, by);
+
+    // Point C
+    const cx = 0 + size / 2;
+    tri.lineTo(cx, by);
+
+    // Connect back to A
+    tri.lineTo(ax, ay);
+
+    const geom = new THREE.ShapeGeometry(tri);
     const mesh = new THREE.Mesh(geom, mat);
     mesh.name = id;
 

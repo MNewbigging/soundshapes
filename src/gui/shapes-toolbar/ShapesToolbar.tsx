@@ -19,6 +19,7 @@ export class ShapesToolbar extends React.Component<Props> {
     return (
       <div className={'shapes-toolbar ' + guiState.shapesVis}>
         {this.renderBeaterButton()}
+        {this.renderTriangleButton()}
         {this.renderSquareButton()}
       </div>
     );
@@ -30,6 +31,20 @@ export class ShapesToolbar extends React.Component<Props> {
     return (
       <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.BEATER, e)}>
         <div className={'icon beater'}></div>
+      </GuiButton>
+    );
+  }
+
+  private renderTriangleButton() {
+    const { guiState } = this.props;
+
+    return (
+      <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.TRIANGLE, e)}>
+        <div className={'icon triangle'}>
+          <svg id={'triangle'} viewBox={'0 0 100 100'}>
+            <polygon points={'50 15, 97 97, 3 97'} />
+          </svg>
+        </div>
       </GuiButton>
     );
   }
