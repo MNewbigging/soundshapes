@@ -17,9 +17,11 @@ export class SndFuncs
     public static getRandomInt(min:number, max:number, interval:number) {
         // original from https://gist.github.com/kerimdzhanov/7529623 
         // interval = spacing between return values, to make modes
+
+
         min /= interval;
         max /= interval;
-        return interval * Math.floor(Math.random() * (max - min + 1) + min);
+        return this.clamp(interval * Math.floor(Math.random() * (max - min + 1) + min), interval*min, interval*max);
     }
 
     public static clamp(value:number, min:number, max:number){
