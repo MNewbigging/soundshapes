@@ -3,6 +3,7 @@ import * as THREE from 'three';
 
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { movementMultiplier } from '../../../scene/player/GamePlayer';
+import { STBeater } from '../../../sound/STBeater';
 import { Shape, ShapeType } from './Shape';
 
 const defaultBeaterRadius = 3;
@@ -36,6 +37,9 @@ export class Beater extends Shape {
   public velocity = new THREE.Vector2().copy(this.defaultDirection);
   public testedColsThisFrame = false;
 
+  // Sound
+  private sound = new STBeater();
+
   constructor(id: string, type: ShapeType) {
     super(id, type);
 
@@ -62,8 +66,12 @@ export class Beater extends Shape {
     this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius, this.id);
   }
 
-  protected playSound() {
+  protected playSound(beater:Beater) {
     // Doesn't!
+    const shapeScale:number = this.scale;
+    const impactStrength:number = beater.speed;
+    const effects:BeaterEffects[] = beater.effects;
+    this.sound.TriggerImpact(shapeScale, impactStrength); 
   }
 
   public updateDirectionLine() {
