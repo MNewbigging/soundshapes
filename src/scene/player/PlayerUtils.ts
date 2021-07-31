@@ -261,8 +261,10 @@ export class PlayerUtils {
     const distVec = new THREE.Vector3().copy(beater.mesh.position).sub(closestPoint);
     const distSq = distVec.lengthSq();
 
+    const collides = distSq < beater.radius * beater.radius;
+
     // Is distance sq smaller than beater radius squared?
-    if (distSq < beater.radius * beater.radius) {
+    if (collides) {
       // Collides; reflect around closest point normal
       const distNormal = distVec.normalize();
       const dnv2 = new THREE.Vector2(distNormal.x, distNormal.y);
@@ -273,6 +275,8 @@ export class PlayerUtils {
       beater.velocity.x -= scaled.x;
       beater.velocity.y -= scaled.y;
     }
+
+    return collides;
   }
 
   public static circleToCircleCollision(beater: Beater, circle: Circle) {

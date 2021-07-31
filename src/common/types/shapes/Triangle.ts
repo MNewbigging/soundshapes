@@ -1,11 +1,10 @@
 import * as THREE from 'three';
-import { ShapesToolbar } from '../../../gui/shapes-toolbar/ShapesToolbar';
 
 import { EditorUtils } from '../../../scene/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
 import { STTriangle } from '../../../sound/STTriangle';
-import { Beater, BeaterEffects } from './Beater';
-import { Shape, ShapeType } from './Shape';
+import { Beater } from './Beater';
+import { Shape } from './Shape';
 
 const defaultTriangleSize = 10;
 
@@ -15,7 +14,7 @@ export class Triangle extends Shape {
   public vertexB = new THREE.Vector3();
   public vertexC = new THREE.Vector3();
 
-  private sound: STTriangle = new STTriangle();
+  private sound = new STTriangle();
 
   public setPosition(pos: THREE.Vector3) {
     super.setPosition(pos);
@@ -29,7 +28,10 @@ export class Triangle extends Shape {
   }
 
   public checkCollision(beater: Beater) {
-    PlayerUtils.circleToTriangleCollision(beater, this);
+    const collides = PlayerUtils.circleToTriangleCollision(beater, this);
+    if (collides) {
+      this.playSound(beater);
+    }
   }
 
   protected buildMesh() {
@@ -39,10 +41,7 @@ export class Triangle extends Shape {
   }
 
   protected playSound(beater: Beater) {
-    const shapeScale: number = this.scale;
-    const impactStrength: number = beater.speed;
-    const effects: BeaterEffects[] = beater.effects;
-    this.sound.triggerImpact(shapeScale, impactStrength, effects);
+    this.sound.triggerImpact(this.scale, beater.speed, beater.effects);
   }
 
   private setVertices() {
