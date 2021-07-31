@@ -120,6 +120,12 @@ export class Beater extends Shape {
     this.updateDirectionLine();
   }
 
+  public removeFromScene(scene: THREE.Scene) {
+    super.removeFromScene(scene);
+
+    this.hideDirectionLine(scene);
+  }
+
   // Player functions
 
   public setStartingDirection() {

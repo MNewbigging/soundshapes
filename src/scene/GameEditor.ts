@@ -35,7 +35,6 @@ export class GameEditor {
 
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
     hotKeys.registerHotKeyListener('Delete', this.deleteShape);
-    hotKeys.registerHotKeyListener('Backspace', this.deleteShape);
 
     DragControls.install({ THREE: THREE });
     this.dragControls = new DragControls(
