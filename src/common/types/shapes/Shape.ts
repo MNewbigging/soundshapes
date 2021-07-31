@@ -4,6 +4,7 @@ import { Beater } from './Beater';
 
 export enum ShapeType {
   BEATER = 'beater',
+  CIRCLE = 'circle',
   TRIANGLE = 'triangle',
   SQUARE = 'square',
 }
@@ -13,6 +14,7 @@ export abstract class Shape {
   public type: ShapeType;
   public mesh: THREE.Mesh;
   public outline: THREE.LineSegments;
+  protected test: string;
 
   @observable public scale = 1;
   @observable public posX = 0;
