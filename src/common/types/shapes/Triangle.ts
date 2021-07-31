@@ -15,7 +15,7 @@ export class Triangle extends Shape {
   public vertexB = new THREE.Vector3();
   public vertexC = new THREE.Vector3();
 
-  private sound:STTriangle = new STTriangle();
+  private sound: STTriangle = new STTriangle();
 
   public setPosition(pos: THREE.Vector3) {
     super.setPosition(pos);
@@ -38,11 +38,11 @@ export class Triangle extends Shape {
     this.setVertices();
   }
 
-  protected playSound(beater:Beater) {
-    const shapeScale:number = this.scale;
-    const impactStrength:number = beater.speed;
-    const effects:BeaterEffects[] = beater.effects;
-    this.sound.TriggerImpact(shapeScale, impactStrength, effects); 
+  protected playSound(beater: Beater) {
+    const shapeScale: number = this.scale;
+    const impactStrength: number = beater.speed;
+    const effects: BeaterEffects[] = beater.effects;
+    this.sound.triggerImpact(shapeScale, impactStrength, effects);
   }
 
   private setVertices() {

@@ -12,4 +12,16 @@ export class RandomUtils {
     }
     return id;
   }
+
+  public static getRandomRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  public static getRandomInterval(min: number, max: number, interval: number) {
+    const value = RandomUtils.getRandomRange(min, max) / interval;
+  }
+
+  public static clamp(value: number, min: number, max: number) {
+    return Math.max(min, Math.min(value, max));
+  }
 }

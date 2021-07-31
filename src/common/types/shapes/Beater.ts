@@ -66,12 +66,12 @@ export class Beater extends Shape {
     this.mesh = EditorUtils.createBeaterMesh(defaultBeaterRadius, this.id);
   }
 
-  protected playSound(beater:Beater) {
+  protected playSound(beater: Beater) {
     // Doesn't!
-    const shapeScale:number = this.scale;
-    const impactStrength:number = beater.speed;
-    const effects:BeaterEffects[] = beater.effects;
-    this.sound.TriggerImpact(shapeScale, impactStrength); 
+    const shapeScale: number = this.scale;
+    const impactStrength: number = beater.speed;
+    const effects: BeaterEffects[] = beater.effects;
+    this.sound.triggerImpact(shapeScale, impactStrength);
   }
 
   public updateDirectionLine() {

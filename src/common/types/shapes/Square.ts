@@ -9,8 +9,8 @@ const defaultSquareSize = 10;
 
 export class Square extends Shape {
   public size = defaultSquareSize;
-  private sound:STSquare = new STSquare();
-  private temp:STTriangle = new STTriangle(); // just for testing until collisions on triangle are implemented
+  private sound = new STSquare();
+  private temp = new STTriangle(); // just for testing until collisions on triangle are implemented
 
   protected buildMesh() {
     this.mesh = EditorUtils.createSquareMesh(defaultSquareSize, this.id);
@@ -36,8 +36,7 @@ export class Square extends Shape {
     // For passing this data to your classes:
     // Make STSquare a property of this class: private sound: STSquare = new STQuare() above
     // Then you can do here:
-    this.sound.TriggerImpact(shapeScale, impactStrength, effects);
-    
+    this.sound.triggerImpact(shapeScale, impactStrength, effects);
   }
 
   public checkCollision(beater: Beater) {
