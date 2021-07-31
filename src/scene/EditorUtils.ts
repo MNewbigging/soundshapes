@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Beater } from '../common/types/shapes/Beater';
+import { Circle } from '../common/types/shapes/Circle';
 import { Shape, ShapeType } from '../common/types/shapes/Shape';
 import { Square } from '../common/types/shapes/Square';
 import { Triangle } from '../common/types/shapes/Triangle';
@@ -80,6 +81,9 @@ export class EditorUtils {
       case ShapeType.BEATER:
         shape = new Beater(id, shapeType);
         break;
+      case ShapeType.CIRCLE:
+        shape = new Circle(id, shapeType);
+        break;
       case ShapeType.TRIANGLE:
         shape = new Triangle(id, shapeType);
         break;
@@ -95,7 +99,18 @@ export class EditorUtils {
     const beaterSegments = 20;
 
     const geom = new THREE.CircleGeometry(radius, beaterSegments, 0, Math.PI * 2);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const mat = new THREE.MeshBasicMaterial({ color: 'yellow' });
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.name = id;
+
+    return mesh;
+  }
+
+  public static createCircleMesh(radius: number, id: string) {
+    const circleSegments = 40;
+
+    const geom = new THREE.CircleGeometry(radius, circleSegments, 0, Math.PI * 2);
+    const mat = new THREE.MeshBasicMaterial({ color: 'orange' });
     const mesh = new THREE.Mesh(geom, mat);
     mesh.name = id;
 
@@ -139,7 +154,7 @@ export class EditorUtils {
 
   public static createSquareMesh(size: number, id: string) {
     const geom = new THREE.PlaneGeometry(size, size);
-    const mat = new THREE.MeshBasicMaterial({ color: 0x1bbb7f });
+    const mat = new THREE.MeshBasicMaterial({ color: 'green' });
     const mesh = new THREE.Mesh(geom, mat);
     mesh.name = id;
 

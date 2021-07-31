@@ -39,7 +39,7 @@ export class PropsToolbar extends React.Component<Props> {
             <DirectionEditor beater={beater} />
           </div>
         );
-
+      case ShapeType.CIRCLE:
       case ShapeType.TRIANGLE:
       case ShapeType.SQUARE:
         return (

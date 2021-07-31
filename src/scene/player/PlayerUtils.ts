@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { Beater } from '../../common/types/shapes/Beater';
+import { Circle } from '../../common/types/shapes/Circle';
 import { Shape } from '../../common/types/shapes/Shape';
 import { Square } from '../../common/types/shapes/Square';
 import { Triangle } from '../../common/types/shapes/Triangle';
@@ -90,7 +91,6 @@ export class PlayerUtils {
 
     target.testedColsThisFrame = true;
 
-    console.log('collision');
     // Step 1 - displace beaters so they no longer overlap
     const distance = Math.sqrt(distanceSq);
 
@@ -273,5 +273,35 @@ export class PlayerUtils {
       beater.velocity.x -= scaled.x;
       beater.velocity.y -= scaled.y;
     }
+  }
+
+  public static circleToCircleCollision(beater: Beater, circle: Circle) {
+    // Is this distance between beater and circle smaller than the sum of their radii
+    const dx = circle.mesh.position.x - beater.mesh.position.x;
+    const dy = circle.mesh.position.y - beater.mesh.position.y;
+    const distanceSq = dx * dx + dy * dy;
+
+    const radii = beater.radius + circle.radius;
+
+    const intersects = Math.abs(distanceSq) < radii * radii;
+
+    if (intersects) {
+      // Displace the beater so it no longer intersects with the circle
+      const distance = Math.sqrt(distanceSq);
+      const colNormal = new THREE.Vector2(dx / distance, dy / distance);
+      const overlap = Math.abs(distance - radii);
+
+      beater.mesh.position.x -= overlap * colNormal.x;
+      beater.mesh.position.y -= overlap * colNormal.y;
+
+      // Reflect around collision normal
+      const dot = 2 * beater.velocity.dot(colNormal);
+      const scaledVec = colNormal.multiplyScalar(dot);
+
+      beater.velocity.x -= scaledVec.x;
+      beater.velocity.y -= scaledVec.y;
+    }
+
+    return intersects;
   }
 }

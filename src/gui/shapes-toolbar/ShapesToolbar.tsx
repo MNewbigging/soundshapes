@@ -19,6 +19,7 @@ export class ShapesToolbar extends React.Component<Props> {
     return (
       <div className={'shapes-toolbar ' + guiState.shapesVis}>
         {this.renderBeaterButton()}
+        {this.renderCircleButton()}
         {this.renderTriangleButton()}
         {this.renderSquareButton()}
       </div>
@@ -31,6 +32,16 @@ export class ShapesToolbar extends React.Component<Props> {
     return (
       <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.BEATER, e)}>
         <div className={'icon beater'}></div>
+      </GuiButton>
+    );
+  }
+
+  private renderCircleButton() {
+    const { guiState } = this.props;
+
+    return (
+      <GuiButton onClick={(e: React.MouseEvent) => guiState.addShape(ShapeType.CIRCLE, e)}>
+        <div className={'icon circle'}></div>
       </GuiButton>
     );
   }

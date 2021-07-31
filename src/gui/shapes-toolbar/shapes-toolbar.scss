@@ -14,6 +14,12 @@
   .beater {
     border-radius: 50%;
     border: solid $buttonTextColor;
+    background-color: $buttonTextColor;
+  }
+
+  .circle {
+    border-radius: 50%;
+    border: solid $buttonTextColor;
   }
 
   .triangle {
