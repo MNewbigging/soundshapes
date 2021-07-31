@@ -5,7 +5,7 @@ import { eventManager, EventType, GameEvent } from '../common/EventManager';
 import { hotKeys } from '../common/HotKeys';
 import { Beater } from '../common/types/shapes/Beater';
 import { Shape, ShapeType } from '../common/types/shapes/Shape';
-import { RandomId } from '../utils/RandomId';
+import { RandomUtils } from '../utils/RandomUtils';
 import { GameScene } from './GameScene';
 import { EditorUtils } from './EditorUtils';
 
@@ -108,7 +108,7 @@ export class GameEditor {
     window.addEventListener('mousemove', this.onMouseMove);
 
     // Make the new shape
-    const shape = EditorUtils.createShape(RandomId.createId(), event.shapeType);
+    const shape = EditorUtils.createShape(RandomUtils.createId(), event.shapeType);
 
     // Add to scene, save ref to object, update scene state
     shape.addToScene(this.gameScene.scene);
