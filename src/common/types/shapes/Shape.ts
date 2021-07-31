@@ -68,8 +68,13 @@ export abstract class Shape {
     this.mesh.updateMatrixWorld();
   }
 
-  public addToScene(scene: THREE.Scene): void {
+  public addToScene(scene: THREE.Scene) {
     scene.add(this.mesh);
+  }
+
+  public removeFromScene(scene: THREE.Scene) {
+    scene.remove(this.mesh);
+    this.hideOutline(scene);
   }
 
   public showOutline(scene: THREE.Scene) {

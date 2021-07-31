@@ -15,7 +15,7 @@ enum EditStates {
 }
 
 export class GameEditor {
-  public readonly shapes: Shape[] = [];
+  public shapes: Shape[] = [];
   private gameScene: GameScene;
   private editState = EditStates.IDLE;
   private mouseShape?: Shape;
@@ -33,6 +33,8 @@ export class GameEditor {
     eventManager.registerEventListener(EventType.SCALE_SHAPE, this.onChangeScale);
 
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
+    hotKeys.registerHotKeyListener('Delete', this.deleteShape);
+    hotKeys.registerHotKeyListener('Backspace', this.deleteShape);
 
     DragControls.install({ THREE: THREE });
     this.dragControls = new DragControls(
@@ -231,6 +233,14 @@ export class GameEditor {
       eventManager.fire({ e: EventType.DESELECT_SHAPE });
     }
   }
+
+  private readonly deleteShape = () => {
+    if (this.selectedShape) {
+      this.selectedShape.removeFromScene(this.gameScene.scene);
+      this.shapes = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
+      this.selectedShape = undefined;
+    }
+  };
 
   private readonly onChangePosition = (event: GameEvent) => {
     if (event.e !== EventType.REPOSITION_SHAPE || !this.selectedShape) {
