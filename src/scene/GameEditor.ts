@@ -31,6 +31,7 @@ export class GameEditor {
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     eventManager.registerEventListener(EventType.REPOSITION_SHAPE, this.onChangePosition);
     eventManager.registerEventListener(EventType.SCALE_SHAPE, this.onChangeScale);
+    eventManager.registerEventListener(EventType.DELETE_SHAPE, this.deleteShape);
 
     hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
     hotKeys.registerHotKeyListener('Delete', this.deleteShape);
@@ -234,11 +235,12 @@ export class GameEditor {
     }
   }
 
-  private readonly deleteShape = () => {
+  private readonly deleteShape = (event?: GameEvent) => {
     if (this.selectedShape) {
       this.selectedShape.removeFromScene(this.gameScene.scene);
       this.shapes = this.shapes.filter((shape) => shape.id !== this.selectedShape.id);
       this.selectedShape = undefined;
+      eventManager.fire({ e: EventType.DELETE_SHAPE });
     }
   };
 

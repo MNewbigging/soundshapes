@@ -10,6 +10,7 @@ import { SpeedEditor } from './SpeedEditor';
 
 import './props-toolbar.scss';
 import { ScaleEditor } from './ScaleEditor';
+import { GuiButton } from '../../common/components/GuiButton';
 
 interface Props {
   guiState: GuiState;
@@ -29,6 +30,8 @@ export class PropsToolbar extends React.Component<Props> {
   }
 
   private getShapePropertyEditors(shape: Shape) {
+    const { guiState } = this.props;
+
     switch (shape.type) {
       case ShapeType.BEATER:
         const beater = shape as Beater;
@@ -46,6 +49,9 @@ export class PropsToolbar extends React.Component<Props> {
           <div>
             <PositionEditor shape={shape} />
             <ScaleEditor shape={shape} />
+            <GuiButton onClick={() => guiState.deleteShape()}>
+              <div className={'ui-button'}>Del</div>
+            </GuiButton>
           </div>
         );
 

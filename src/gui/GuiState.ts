@@ -27,6 +27,7 @@ export class GuiState {
     eventManager.registerEventListener(EventType.SELECT_SHAPE, this.onSelectShape);
     eventManager.registerEventListener(EventType.DESELECT_SHAPE, this.onDeselectShape);
     eventManager.registerEventListener(EventType.CHANGE_GAME_MODE, this.onGameModeChange);
+    eventManager.registerEventListener(EventType.DELETE_SHAPE, this.onDeleteShape);
   }
 
   @action public showHelp() {
@@ -44,6 +45,15 @@ export class GuiState {
     this.hideAllGui();
     eventManager.fire({ e: EventType.START_ADD_SHAPE, shapeType, mouseEvent });
   }
+
+  public deleteShape() {
+    eventManager.fire({ e: EventType.DELETE_SHAPE });
+  }
+
+  private readonly onDeleteShape = () => {
+    // Deleted shape is always the currently selected one
+    this.onDeselectShape();
+  };
 
   private fireDeselectEvent() {
     // Only fires if necessary
@@ -137,7 +147,7 @@ export class GuiState {
     }
   };
 
-  private readonly onDeselectShape = (_event: GameEvent) => {
+  private readonly onDeselectShape = (event?: GameEvent) => {
     // Are we in a selected state?
     if (this.propsVis === GuiVisibility.CLOSED) {
       return;
