@@ -1,4 +1,4 @@
-export class RandomId {
+export class RandomUtils {
   private static readonly characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
