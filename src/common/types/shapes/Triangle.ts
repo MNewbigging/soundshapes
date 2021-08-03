@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { EditorUtils } from '../../../scene/EditorUtils';
+import { EditorUtils } from '../../../scene/editor/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
 import { STTriangle } from '../../../sound/STTriangle';
 import { Beater } from './Beater';

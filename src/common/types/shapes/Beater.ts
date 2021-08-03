@@ -1,7 +1,7 @@
 import { action, observable } from 'mobx';
 import * as THREE from 'three';
 
-import { EditorUtils } from '../../../scene/EditorUtils';
+import { EditorUtils } from '../../../scene/editor/EditorUtils';
 import { movementMultiplier } from '../../../scene/player/GamePlayer';
 import { STBeater } from '../../../sound/STBeater';
 import { Shape, ShapeType } from './Shape';

@@ -1,6 +1,6 @@
 import { action, observable } from 'mobx';
 import { eventManager, EventType } from './common/EventManager';
-import { GameEditor } from './scene/GameEditor';
+import { GameEditor } from './scene/editor/GameEditor';
 import { GameScene } from './scene/GameScene';
 import { GamePlayer } from './scene/player/GamePlayer';
 

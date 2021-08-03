@@ -1,4 +1,4 @@
-import { EditorUtils } from '../../../scene/EditorUtils';
+import { EditorUtils } from '../../../scene/editor/EditorUtils';
 import { PlayerUtils } from '../../../scene/player/PlayerUtils';
 import { STCircle } from '../../../sound/STCircle';
 import { Beater } from './Beater';

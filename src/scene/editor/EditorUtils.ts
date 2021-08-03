@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { Beater } from '../common/types/shapes/Beater';
-import { Circle } from '../common/types/shapes/Circle';
-import { Shape, ShapeType } from '../common/types/shapes/Shape';
-import { Square } from '../common/types/shapes/Square';
-import { Triangle } from '../common/types/shapes/Triangle';
-import { SceneLimits } from './GameScene';
+import { Beater } from '../../common/types/shapes/Beater';
+import { Circle } from '../../common/types/shapes/Circle';
+import { Shape, ShapeType } from '../../common/types/shapes/Shape';
+import { Square } from '../../common/types/shapes/Square';
+import { Triangle } from '../../common/types/shapes/Triangle';
+import { SceneLimits } from '../GameScene';
 
 export class EditorUtils {
   public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
