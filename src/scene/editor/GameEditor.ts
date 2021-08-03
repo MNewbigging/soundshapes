@@ -20,6 +20,8 @@ export class GameEditor {
   private mouseShape?: Shape;
   private mousePos = new THREE.Vector3();
   private selectedShape?: Shape;
+  private dragStartPos = new THREE.Vector3();
+  private dragOffset = new THREE.Vector3();
 
   constructor(gameScene: GameScene) {
     this.gameScene = gameScene;
@@ -69,11 +71,11 @@ export class GameEditor {
   };
 
   private addListeners() {
-    this.gameScene.renderer.domElement.onclick = this.onClickCanvas;
+    this.gameScene.renderer.domElement.addEventListener('mousedown', this.onClickCanvas);
   }
 
   private removeListeners() {
-    this.gameScene.renderer.domElement.onclick = undefined;
+    this.gameScene.renderer.domElement.removeEventListener('mousedown', this.onClickCanvas);
   }
 
   private trackMouse() {
@@ -142,6 +144,7 @@ export class GameEditor {
         const clickedShape = EditorUtils.clickedShape(this.shapes, this.mousePos);
         if (clickedShape) {
           this.selectShape(clickedShape);
+          this.onDragStart();
         } else {
           this.deselectShape();
         }
@@ -151,6 +154,47 @@ export class GameEditor {
         this.addShape();
         break;
     }
+  };
+
+  private onDragStart() {
+    // Save the current shape's position before the drag started
+    this.dragStartPos = this.dragStartPos.copy(this.selectedShape.mesh.position);
+
+    // Work out the offset from mouse to shape
+    this.dragOffset = EditorUtils.getMouseOffset(this.selectedShape, this.mousePos);
+
+    // Track mouse position
+    this.trackMouse();
+
+    // Additional mouse move callback to set shape position
+    document.addEventListener('mousemove', this.onDrag);
+
+    // Listen for mouse up to signify drag ended
+    document.addEventListener('mouseup', this.onDragEnd);
+  }
+
+  private readonly onDrag = () => {
+    // Move the selected shape
+    const offsetPos = new THREE.Vector3().copy(this.mousePos).sub(this.dragOffset);
+    this.selectedShape.setPosition(offsetPos);
+  };
+
+  private readonly onDragEnd = () => {
+    // Is this shape's new position valid?
+    const valid = EditorUtils.shapePositionValid(
+      this.selectedShape,
+      this.gameScene.sceneLimits,
+      this.shapes
+    );
+    if (!valid) {
+      // Move it back to before drag started
+      this.selectedShape.setPosition(this.dragStartPos);
+    }
+
+    // Can now stop tracking mouse and mouseup
+    this.untrackMouse();
+    document.removeEventListener('mouseup', this.onDragEnd);
+    document.removeEventListener('mousemove', this.onDrag);
   };
 
   private addShape() {

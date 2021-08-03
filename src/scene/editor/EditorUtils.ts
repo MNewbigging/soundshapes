@@ -7,6 +7,12 @@ import { Triangle } from '../../common/types/shapes/Triangle';
 import { SceneLimits } from '../GameScene';
 
 export class EditorUtils {
+  public static getMouseOffset(shape: Shape, mousePos: THREE.Vector3) {
+    const meshPos = shape.mesh.position;
+
+    return new THREE.Vector3().copy(mousePos).sub(meshPos);
+  }
+
   public static clickedShape(shapes: Shape[], mousePos: THREE.Vector3): Shape | undefined {
     for (const shape of shapes) {
       if (EditorUtils.meshContainsPoint(shape.mesh, mousePos)) {
