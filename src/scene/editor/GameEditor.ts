@@ -32,7 +32,7 @@ export class GameEditor {
     eventManager.registerEventListener(EventType.SCALE_SHAPE, this.onChangeScale);
     eventManager.registerEventListener(EventType.DELETE_SHAPE, this.deleteShape);
 
-    hotKeys.registerHotKeyListener('Escape', this.cancelAddShape);
+    hotKeys.registerHotKeyListener('Escape', this.onEscapePress);
     hotKeys.registerHotKeyListener('Delete', this.deleteShape);
   }
 
@@ -111,11 +111,19 @@ export class GameEditor {
     this.editState = EditStates.ADDING_SHAPE;
   };
 
-  private readonly cancelAddShape = () => {
-    if (this.editState !== EditStates.ADDING_SHAPE) {
-      return;
+  private readonly onEscapePress = () => {
+    // What to do on escape press is based on context
+    switch (this.editState) {
+      case EditStates.ADDING_SHAPE:
+        this.cancelAddShape();
+        break;
+      case EditStates.IDLE:
+        this.deselectShape();
+        break;
     }
+  };
 
+  private cancelAddShape() {
     // Stop listening to mouse movement
     this.untrackMouse();
 
@@ -131,7 +139,7 @@ export class GameEditor {
     this.editState = EditStates.IDLE;
     // Fire cancellation event
     eventManager.fire({ e: EventType.CANCEL_ADD });
-  };
+  }
 
   private readonly onClickCanvas = (e: MouseEvent) => {
     // Determine action based on current state
