@@ -252,7 +252,10 @@ export class GameEditor {
       return;
     }
 
-    this.deselectShape();
+    //this.deselectShape();
+    if (this.selectedShape) {
+      this.selectedShape.hideOutline(this.gameScene.scene);
+    }
 
     this.selectedShape = shape;
 

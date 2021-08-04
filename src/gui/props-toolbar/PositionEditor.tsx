@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import * as THREE from 'three';
+import NumericInput from 'react-numeric-input';
 
 import { eventManager, EventType } from '../../common/EventManager';
 import { Shape } from '../../common/types/shapes/Shape';
@@ -20,7 +21,19 @@ export class PositionEditor extends React.Component<Props> {
     return (
       <GuiDrawer buttonText={'P'} className={'position-editor'}>
         <div className={'label'}>X: </div>
-        <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} />
+        {/* <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} /> */}
+        <NumericInput
+          className={'number-input'}
+          autoComplete={'off'}
+          style={false}
+          min={0}
+          max={12}
+          precision={1}
+          value={shape.posX}
+          onChange={(num: number) => {
+            this.setPosX(num);
+          }}
+        />
 
         <div className={'label'}>Y:</div>
         <input className={'input'} type={'number'} value={shape.posY} onChange={this.setPosY} />
@@ -28,13 +41,13 @@ export class PositionEditor extends React.Component<Props> {
     );
   }
 
-  private readonly setPosX = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private readonly setPosX = (value: number) => {
     const { shape } = this.props;
 
-    const value = parseFloat(e.target.value);
-    if (Number.isNaN(value)) {
-      return;
-    }
+    // let value = parseFloat(e.target.value);
+    // if (Number.isNaN(value)) {
+    //   value = 0;
+    // }
 
     const newPos = new THREE.Vector3(value, shape.mesh.position.y, 0);
 
@@ -44,9 +57,9 @@ export class PositionEditor extends React.Component<Props> {
   private readonly setPosY = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { shape } = this.props;
 
-    const value = parseFloat(e.target.value);
+    let value = parseFloat(e.target.value);
     if (Number.isNaN(value)) {
-      return;
+      value = 0;
     }
 
     const newPos = new THREE.Vector3(shape.mesh.position.x, value, 0);

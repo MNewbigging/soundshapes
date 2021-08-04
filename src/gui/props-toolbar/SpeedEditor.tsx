@@ -1,3 +1,4 @@
+import NumericInput from 'react-numeric-input';
 import { observer } from 'mobx-react';
 import React from 'react';
 
@@ -18,19 +19,19 @@ export class SpeedEditor extends React.Component<Props> {
     return (
       <GuiDrawer buttonText={'S'} className={'speed-editor'}>
         <div className={'label'}>Speed:</div>
-        <input
-          className={'input'}
-          type={'number'}
+        <NumericInput
+          className={'number-input'}
+          autoComplete={'off'}
+          style={false}
+          min={0}
+          max={12}
+          precision={1}
           value={beater.speed}
-          onChange={this.onChangeSpeed}
+          onChange={(num: number) => {
+            beater.setSpeed(num);
+          }}
         />
       </GuiDrawer>
     );
   }
-
-  private readonly onChangeSpeed = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { beater } = this.props;
-
-    beater.setSpeed(parseInt(e.target.value, 10));
-  };
 }
