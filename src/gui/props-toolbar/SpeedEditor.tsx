@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 
 import { Beater } from '../../common/types/shapes/Beater';
+import { GuiDrawer } from './GuiDrawer';
 
 import './speed-editor.scss';
 
@@ -15,18 +16,15 @@ export class SpeedEditor extends React.Component<Props> {
     const { beater } = this.props;
 
     return (
-      <div className={'drawer-parent speed-editor'}>
-        <div className={'ui-button'}>S</div>
-        <div className={'drawer speed-drawer'}>
-          <div className={'label'}>Speed:</div>
-          <input
-            className={'input'}
-            type={'number'}
-            value={beater.speed}
-            onChange={this.onChangeSpeed}
-          />
-        </div>
-      </div>
+      <GuiDrawer buttonText={'S'} className={'speed-editor'}>
+        <div className={'label'}>Speed:</div>
+        <input
+          className={'input'}
+          type={'number'}
+          value={beater.speed}
+          onChange={this.onChangeSpeed}
+        />
+      </GuiDrawer>
     );
   }
 

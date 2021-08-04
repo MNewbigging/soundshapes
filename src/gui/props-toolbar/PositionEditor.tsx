@@ -4,6 +4,7 @@ import * as THREE from 'three';
 
 import { eventManager, EventType } from '../../common/EventManager';
 import { Shape } from '../../common/types/shapes/Shape';
+import { GuiDrawer } from './GuiDrawer';
 
 import './position-editor.scss';
 
@@ -17,16 +18,13 @@ export class PositionEditor extends React.Component<Props> {
     const { shape } = this.props;
 
     return (
-      <div className={'drawer-parent position-editor'}>
-        <div className={'ui-button'}>P</div>
-        <div className={'drawer position-drawer'}>
-          <div className={'label'}>X: </div>
-          <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} />
+      <GuiDrawer buttonText={'P'} className={'position-editor'}>
+        <div className={'label'}>X: </div>
+        <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} />
 
-          <div className={'label'}>Y:</div>
-          <input className={'input'} type={'number'} value={shape.posY} onChange={this.setPosY} />
-        </div>
-      </div>
+        <div className={'label'}>Y:</div>
+        <input className={'input'} type={'number'} value={shape.posY} onChange={this.setPosY} />
+      </GuiDrawer>
     );
   }
 

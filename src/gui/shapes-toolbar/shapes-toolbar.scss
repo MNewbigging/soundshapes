@@ -26,6 +26,12 @@
     margin-bottom: 5px;
   }
 
+  #triangle {
+    fill: none;
+    stroke: $buttonTextColor;
+    stroke-width: 6px;
+  }
+
   .square {
     border: solid $buttonTextColor;
   }

@@ -7,10 +7,10 @@ import { GuiState } from '../GuiState';
 import { DirectionEditor } from './DirectionEditor';
 import { PositionEditor } from './PositionEditor';
 import { SpeedEditor } from './SpeedEditor';
-
-import './props-toolbar.scss';
 import { ScaleEditor } from './ScaleEditor';
 import { GuiButton } from '../../common/components/GuiButton';
+
+import './props-toolbar.scss';
 
 interface Props {
   guiState: GuiState;

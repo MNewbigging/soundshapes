@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 
 import { Beater } from '../../common/types/shapes/Beater';
+import { GuiDrawer } from './GuiDrawer';
 
 import './direction-editor.scss';
 
@@ -15,22 +16,19 @@ export class DirectionEditor extends React.Component<Props> {
     const { beater } = this.props;
 
     return (
-      <div className={'drawer-parent direction-editor'}>
-        <div className={'ui-button'}>D</div>
-        <div className={'drawer direction-drawer'}>
-          <div className={'label'}>Dir:</div>
-          <input
-            className={'input'}
-            type={'range'}
-            min={'0'}
-            max={'360'}
-            value={beater.rotation}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              beater.setRotation(parseInt(e.target.value, 10))
-            }
-          />
-        </div>
-      </div>
+      <GuiDrawer buttonText={'D'} className={'direction-editor'}>
+        <div className={'label'}>Dir:</div>
+        <input
+          className={'input'}
+          type={'range'}
+          min={'0'}
+          max={'360'}
+          value={beater.rotation}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            beater.setRotation(parseInt(e.target.value, 10))
+          }
+        />
+      </GuiDrawer>
     );
   }
 }

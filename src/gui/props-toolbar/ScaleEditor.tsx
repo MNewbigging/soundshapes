@@ -3,6 +3,7 @@ import React from 'react';
 import { eventManager, EventType } from '../../common/EventManager';
 
 import { Shape } from '../../common/types/shapes/Shape';
+import { GuiDrawer } from './GuiDrawer';
 
 import './scale-editor.scss';
 
@@ -16,18 +17,15 @@ export class ScaleEditor extends React.Component<Props> {
     const { shape } = this.props;
 
     return (
-      <div className={'drawer-parent scale-editor'}>
-        <div className={'ui-button'}>Sc</div>
-        <div className={'drawer scale-drawer'}>
-          <div className={'label'}>Scale:</div>
-          <input
-            className={'input'}
-            type={'number'}
-            value={shape.scale}
-            onChange={this.onChangeScale}
-          />
-        </div>
-      </div>
+      <GuiDrawer buttonText={'Sc'} className={'scale-editor'}>
+        <div className={'label'}>Scale:</div>
+        <input
+          className={'input'}
+          type={'number'}
+          value={shape.scale}
+          onChange={this.onChangeScale}
+        />
+      </GuiDrawer>
     );
   }
 
