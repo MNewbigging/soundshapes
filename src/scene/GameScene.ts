@@ -54,6 +54,8 @@ export class GameScene {
     // const intensity = 1;
     // const light = new THREE.HemisphereLight(color, groundCol, intensity);
     // this.scene.add(light);
+
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   public start() {
@@ -70,5 +72,12 @@ export class GameScene {
     this.updateLoop();
 
     this.renderer.render(this.scene, this.camera);
+  };
+
+  private readonly onWindowResize = () => {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight - 1);
   };
 }
