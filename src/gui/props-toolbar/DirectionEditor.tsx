@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
+import NumericInput from 'react-numeric-input';
 
 import { Beater } from '../../common/types/shapes/Beater';
 import { GuiDrawer } from './GuiDrawer';
@@ -18,15 +19,16 @@ export class DirectionEditor extends React.Component<Props> {
     return (
       <GuiDrawer buttonText={'D'} className={'direction-editor'}>
         <div className={'label'}>Dir:</div>
-        <input
-          className={'input'}
-          type={'range'}
-          min={'0'}
-          max={'360'}
+        <NumericInput
+          className={'dir-input'}
+          autoComplete={'off'}
+          style={false}
+          min={0}
+          max={360}
+          step={1}
+          precision={0}
           value={beater.rotation}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            beater.setRotation(parseInt(e.target.value, 10))
-          }
+          onChange={(num: number) => beater.setRotation(num)}
         />
       </GuiDrawer>
     );
