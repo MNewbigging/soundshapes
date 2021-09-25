@@ -24,7 +24,6 @@ export class PositionEditor extends React.Component<Props> {
         <NumericInput
           className={'number-input'}
           autoComplete={'off'}
-          addLabelText={'X:'}
           style={false}
           precision={3}
           value={shape.posX}

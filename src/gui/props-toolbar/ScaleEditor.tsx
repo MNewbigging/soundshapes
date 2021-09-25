@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
+import NumericInput from 'react-numeric-input';
 import { eventManager, EventType } from '../../common/EventManager';
 
 import { Shape } from '../../common/types/shapes/Shape';
@@ -19,21 +20,21 @@ export class ScaleEditor extends React.Component<Props> {
     return (
       <GuiDrawer buttonText={'Sc'} className={'scale-editor'}>
         <div className={'label'}>Scale:</div>
-        <input
-          className={'input'}
-          type={'number'}
+        <NumericInput
+          className={'scale-input'}
+          autoComplete={'off'}
+          style={false}
+          precision={2}
           value={shape.scale}
-          onChange={this.onChangeScale}
+          onChange={(n: number) => this.onChangeScale(n)}
         />
       </GuiDrawer>
     );
   }
 
-  private readonly onChangeScale = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private readonly onChangeScale = (scale: number) => {
     const { shape } = this.props;
 
-    // shape.setScale(parseInt(e.target.value, 10));
-    const scale = parseInt(e.target.value, 10);
     eventManager.fire({ e: EventType.SCALE_SHAPE, scale });
   };
 }
