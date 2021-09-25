@@ -1,6 +1,7 @@
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
+
 import { eventManager, EventType } from '../../common/EventManager';
 
 interface Props {

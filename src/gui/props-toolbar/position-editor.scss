@@ -1,5 +1,9 @@
 .position-editor {
-  .input {
-    width: 70px;
+  .number-input {
+    width: 60px;
+
+    &:first-of-type {
+      margin-right: 5px;
+    }
   }
 }

@@ -21,22 +21,25 @@ export class PositionEditor extends React.Component<Props> {
     return (
       <GuiDrawer buttonText={'P'} className={'position-editor'}>
         <div className={'label'}>X: </div>
-        {/* <input className={'input'} type={'number'} value={shape.posX} onChange={this.setPosX} /> */}
+        <NumericInput
+          className={'number-input'}
+          autoComplete={'off'}
+          addLabelText={'X:'}
+          style={false}
+          precision={3}
+          value={shape.posX}
+          onChange={(num: number) => this.setPosX(num)}
+        />
+
+        <div className={'label'}>Y:</div>
         <NumericInput
           className={'number-input'}
           autoComplete={'off'}
           style={false}
-          min={0}
-          max={12}
-          precision={1}
-          value={shape.posX}
-          onChange={(num: number) => {
-            this.setPosX(num);
-          }}
+          precision={3}
+          value={shape.posY}
+          onChange={(num: number) => this.setPosY(num)}
         />
-
-        <div className={'label'}>Y:</div>
-        <input className={'input'} type={'number'} value={shape.posY} onChange={this.setPosY} />
       </GuiDrawer>
     );
   }
@@ -54,13 +57,13 @@ export class PositionEditor extends React.Component<Props> {
     eventManager.fire({ e: EventType.REPOSITION_SHAPE, newPos });
   };
 
-  private readonly setPosY = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private readonly setPosY = (value: number) => {
     const { shape } = this.props;
 
-    let value = parseFloat(e.target.value);
-    if (Number.isNaN(value)) {
-      value = 0;
-    }
+    // let value = parseFloat(e.target.value);
+    // if (Number.isNaN(value)) {
+    //   value = 0;
+    // }
 
     const newPos = new THREE.Vector3(shape.mesh.position.x, value, 0);
 

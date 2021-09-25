@@ -51,6 +51,8 @@ $iconBorderWidth: 3px;
 
   .drawer {
     position: absolute;
+    box-sizing: border-box;
+    padding: 5px;
     border: 1px solid $drawerBorderColor;
     border-right: none;
     background-color: $drawerBackgroundColor;
